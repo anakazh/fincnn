@@ -1,6 +1,10 @@
-from base_model import BaseCNN
+from models import CNN_5_20
 
 if __name__ == '__main__':
 
-    cnn = BaseCNN()
-    cnn.fit()
+    cnn = CNN_5_20()
+    cnn.generate_images()  # ~10 mins
+    cnn.fit(batch_size=5)
+    cnn.plot_history()
+    cnn.evaluate()
+
