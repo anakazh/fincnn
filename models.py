@@ -191,9 +191,9 @@ class BaseCNN:
 
 class CNN_5_20(BaseCNN):
 
-    def __init__(self):
+    def __init__(self, batch_size=1):
         super().__init__(name='CNN_5_20', image_horizon=5, return_horizon=20,
-                         img_height=32, img_width=15, volume_height=12)
+                         img_height=32, img_width=15, volume_height=12, batch_size=batch_size)
 
     def fit(self, epochs=2):
         train_dataset, test_dataset = self.load_dataset()
@@ -232,11 +232,11 @@ class CNN_5_20(BaseCNN):
 
 class CNN_20_20(BaseCNN):
 
-    def __init__(self):
+    def __init__(self, batch_size=1):
         super().__init__(name='CNN_20_20', image_horizon=20, return_horizon=20,
-                         img_height=64, img_width=60, volume_height=12)
+                         img_height=64, img_width=60, volume_height=12, batch_size=batch_size)
 
-    def fit(self, batch_size=1, epochs=2):
+    def fit(self, epochs=2):
         train_dataset, test_dataset = self.load_dataset()
 
         # Model design
@@ -274,11 +274,11 @@ class CNN_20_20(BaseCNN):
 
 
 class CNN_60_20(BaseCNN):
-    def __init__(self):
+    def __init__(self, batch_size=1):
         super().__init__(name='CNN_60_20', image_horizon=60, return_horizon=20,
-                         img_height=96, img_width=180, volume_height=19)
+                         img_height=96, img_width=180, volume_height=19, batch_size=batch_size)
 
-    def fit(self, batch_size=1, epochs=2):
+    def fit(self, epochs=2):
         train_dataset, test_dataset = self.load_dataset()
 
         # Model design
