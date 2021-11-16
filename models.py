@@ -1,4 +1,5 @@
 import tensorflow as tf
+import tensorflow_addons as tfa
 from tensorflow.keras import layers, models
 from tensorflow.keras.utils import image_dataset_from_directory
 import json
@@ -106,17 +107,18 @@ class BaseCNN:
                 savepath = os.path.join(self.val_dataset_path, 'neg', filename)
 
             self.gen_image(dataslice, savepath)
+        self.describe_dataset()
 
-        train_pos_ret = len(os.listdir(os.path.join(self.train_dataset_path, 'pos')))
-        train_sample_size = train_pos_ret + len(os.listdir(os.path.join(self.train_dataset_path, 'neg')))
-        val_pos_ret = len(os.listdir(os.path.join(self.val_dataset_path, 'pos')))
-        val_sample_size = val_pos_ret + len(os.listdir(os.path.join(self.val_dataset_path, 'neg')))
-        print('Positive returns in the train sample: {} ({}%)'.format(train_pos_ret,
-                                                                      round(train_pos_ret / train_sample_size,
-                                                                            4) * 100))
-        print('Positive returns in the validation sample: {} ({}%)'.format(val_pos_ret,
-                                                                           round(val_pos_ret / val_sample_size,
-                                                                                 4) * 100))
+    def describe_dataset(self):
+        train_pos_count = len(os.listdir(os.path.join(self.train_dataset_path, 'pos')))
+        train_sample_size = train_pos_count + len(os.listdir(os.path.join(self.train_dataset_path, 'neg')))
+        train_pos_frac = train_pos_count / train_sample_size
+        val_pos_count = len(os.listdir(os.path.join(self.val_dataset_path, 'pos')))
+        val_sample_size = val_pos_count + len(os.listdir(os.path.join(self.val_dataset_path, 'neg')))
+        val_pos_frac = val_pos_count / val_sample_size
+        print('Train sample size: {}'.format(train_sample_size))
+        print('Positive returns in the train sample: {} ({:.2%})'.format(train_pos_count, train_pos_frac))
+        print('Positive returns in the validation sample: {} ({:.2%})'.format(val_pos_count, val_pos_frac))
 
     def load_dataset(self):
         # For a grayscale image pixel values range from 0 to 255 (0 represents black and 255 represents white)
@@ -124,6 +126,7 @@ class BaseCNN:
                                                     batch_size=self.batch_size,  # default: 32
                                                     color_mode='grayscale',
                                                     image_size=(self.img_height, self.img_width))
+        self.describe_dataset()
 
         # train-test split
         dataset_size = tf.data.experimental.cardinality(full_dataset).numpy()
@@ -179,14 +182,22 @@ class BaseCNN:
                                                    batch_size=self.batch_size,  # default: 32
                                                    color_mode='grayscale',
                                                    image_size=(self.img_height, self.img_width))
+        self.describe_dataset()
         # self.model.evaluate throws an error
-        # val_metrics = self.model.evaluate(x=val_dataset, y=None, batch_size=self.batch_size, return_dict=True)
-        input = val_dataset.map(lambda x,y: x)
-        target = val_dataset.map(lambda x,y: y)
-        target_true = np.fromiter(target.as_numpy_iterator(), float)
-        target_pred = self.model.predict(input).reshape(target_true.shape)
-        accuracy = (target_pred == target_true).sum() / len(target_true)
-        json.dump({'accuracy': accuracy}, open(self.val_metrics_path, 'w'))
+        if self.batch_size == 1:
+            # self.model.evaluate throws an error when batch_side is > 1
+            val_metrics = self.model.evaluate(x=val_dataset, y=None, batch_size=self.batch_size,
+                                              return_dict=True)
+            val_metrics['f1score'] = 2 / (1/val_metrics['precision']+1/val_metrics['recall'])
+            json.dump(val_metrics, open(self.val_metrics_path, 'w'))
+        else:
+            input = val_dataset.map(lambda x,y: x)
+            target = val_dataset.map(lambda x,y: y)
+            target_true = np.fromiter(target.as_numpy_iterator(), float)
+            target_pred = self.model.predict(input).reshape(target_true.shape)
+            accuracy = (target_pred == target_true).sum() / len(target_true)
+            # TODO: add precision, recall and f1score
+            json.dump({'accuracy': accuracy}, open(self.val_metrics_path, 'w'))
 
 
 class CNN_5_20(BaseCNN):
@@ -216,7 +227,7 @@ class CNN_5_20(BaseCNN):
         self.model.summary()
         self.model.compile(optimizer='adam',
                            loss=tf.keras.losses.BinaryCrossentropy(from_logits=False),  # default False
-                           metrics=['accuracy'])
+                           metrics=['accuracy', 'Precision', 'Recall'])
 
         self.history = self.model.fit(x=train_dataset, y=None, batch_size=self.batch_size,
                                       epochs=epochs,
@@ -259,7 +270,7 @@ class CNN_20_20(BaseCNN):
         self.model.summary()
         self.model.compile(optimizer='adam',
                            loss=tf.keras.losses.BinaryCrossentropy(from_logits=False),  # default False
-                           metrics=['accuracy'])
+                           metrics=['accuracy', 'Precision', 'Recall'])
 
         self.history = self.model.fit(x=train_dataset, y=None, batch_size=self.batch_size,
                                       epochs=epochs,
@@ -303,7 +314,7 @@ class CNN_60_20(BaseCNN):
         self.model.summary()
         self.model.compile(optimizer='adam',
                            loss=tf.keras.losses.BinaryCrossentropy(from_logits=False),  # default False
-                           metrics=['accuracy'])
+                           metrics=['accuracy', 'Precision', 'Recall'])
 
         self.history = self.model.fit(x=train_dataset, y=None, batch_size=self.batch_size,
                                       epochs=epochs,
