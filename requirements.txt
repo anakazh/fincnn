@@ -4,3 +4,4 @@ tqdm
 mplfinance==0.12.7a17
 tensorflow==2.7.0
 sklearn
+yfinance
