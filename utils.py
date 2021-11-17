@@ -1,7 +1,7 @@
 import os
 import shutil
 import pandas as pd
-from PIL import Image
+from PIL import Image, ImageOps
 
 style = {'base_mpl_style': 'ggplot',
          'marketcolors'  : {'candle': {'up': '#000000', 'down': '#000000'},
@@ -51,7 +51,11 @@ def convert_gray_to_black(image):
 
 def convert_rgba_to_bw(savepath):
     image = Image.open(savepath).convert('L')
-    convert_gray_to_black(image).save(savepath)
+    image = convert_gray_to_black(image)
+    image = image.convert('L')  # convert it into "L" for the next line to run
+    image = ImageOps.invert(image)
+    image = image.convert('1')  # convert back to 1-bit pixels, black and white
+    image.save(savepath)
     image.close()
 
 
