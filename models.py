@@ -1,5 +1,4 @@
 import tensorflow as tf
-import tensorflow_addons as tfa
 from tensorflow.keras import layers, models
 from tensorflow.keras.utils import image_dataset_from_directory
 import json
@@ -10,6 +9,7 @@ import pandas as pd
 from utils import style, overwrite_dir, get_raw_data, convert_rgba_to_bw
 import matplotlib.pyplot as plt
 import numpy as np
+from sklearn.metrics import precision_recall_fscore_support
 
 
 class BaseCNN:
@@ -72,6 +72,7 @@ class BaseCNN:
         convert_rgba_to_bw(savepath)
 
     def generate_images(self):
+        #TODO: validation cutoff date
         data = get_raw_data()
         train_val_cutoff = round((len(data) - self.image_horizon - self.return_horizon) * 0.7)
         last_train_index = self.image_horizon + self.return_horizon + train_val_cutoff
@@ -118,6 +119,7 @@ class BaseCNN:
         val_pos_frac = val_pos_count / val_sample_size
         print('Train sample size: {}'.format(train_sample_size))
         print('Positive returns in the train sample: {} ({:.2%})'.format(train_pos_count, train_pos_frac))
+        print('Validation sample size: {}'.format(val_sample_size))
         print('Positive returns in the validation sample: {} ({:.2%})'.format(val_pos_count, val_pos_frac))
 
     def load_dataset(self):
@@ -183,21 +185,25 @@ class BaseCNN:
                                                    color_mode='grayscale',
                                                    image_size=(self.img_height, self.img_width))
         self.describe_dataset()
-        # self.model.evaluate throws an error
-        if self.batch_size == 1:
-            # self.model.evaluate throws an error when batch_side is > 1
-            val_metrics = self.model.evaluate(x=val_dataset, y=None, batch_size=self.batch_size,
-                                              return_dict=True)
-            val_metrics['f1score'] = 2 / (1/val_metrics['precision']+1/val_metrics['recall'])
-            json.dump(val_metrics, open(self.val_metrics_path, 'w'))
-        else:
-            input = val_dataset.map(lambda x,y: x)
-            target = val_dataset.map(lambda x,y: y)
-            target_true = np.fromiter(target.as_numpy_iterator(), float)
-            target_pred = self.model.predict(input).reshape(target_true.shape)
-            accuracy = (target_pred == target_true).sum() / len(target_true)
-            # TODO: add precision, recall and f1score
-            json.dump({'accuracy': accuracy}, open(self.val_metrics_path, 'w'))
+
+        # self.model.evaluate throws an error when batch_size is > 1
+        #val_metrics = self.model.evaluate(x=val_dataset, y=None, batch_size=self.batch_size, return_dict=True)
+        #val_metrics['f1score'] = 2 / (1/val_metrics['precision']+1/val_metrics['recall'])
+        #json.dump(val_metrics, open(self.val_metrics_path, 'w'))
+
+        input = val_dataset.map(lambda x, y: x)
+        target = val_dataset.map(lambda x, y: y)
+        target_true = np.array(0)
+        for batch in target.as_numpy_iterator():
+            target_true = np.append(target_true, batch)
+        target_true = np.delete(target_true, 0)
+        target_pred = self.model.predict(input).reshape(target_true.shape)
+        accuracy = (target_pred == target_true).sum() / len(target_true)
+        precision, recall, f1score, _ = precision_recall_fscore_support(target_true, target_pred,
+                                                                              average='binary')
+        val_metrics = {'accuracy': accuracy, 'precision': precision,
+                       'recall': recall, 'f1score': f1score}
+        json.dump(val_metrics, open(self.val_metrics_path, 'w'))
 
 
 class CNN_5_20(BaseCNN):
