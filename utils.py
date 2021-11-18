@@ -32,6 +32,18 @@ style = {'base_mpl_style': 'ggplot',
          'base_mpf_style': 'checkers'}
 
 
+# width-related code in mplfinance:
+# https://github.com/matplotlib/mplfinance/blob/d777f433e92588a09803cefb56053a49e3618d39/src/mplfinance/_widths.py#L86
+# width is given in Points, 1 Pixel = 72 Points, source:
+# https://stackoverflow.com/questions/57657419/how-to-draw-a-figure-in-specific-pixel-size-with-matplotlib
+width_config = {'volume_width': 1/3,  # width is given as a fraction [0, 1] - NOT POINTS
+                'volume_linewidth': 0,  # Width of the bar edge(s). If 0, don't draw edges (grey area around volume bars)
+                'line_width': 0,  # apparently this is the width of mav, vlines and hlines
+                'ohlc_linewidth': 1 * 72 / style['rc']['figure.dpi'] / 2,
+                'ohlc_ticksize': 1/3,  # width is given as a fraction [0, 1] - NOT POINTS
+                }
+
+
 def convert_gray_to_black(image):
     # Source: https://www.codementor.io/@isaib.cicourel/image-manipulation-in-python-du1089j1u
     width, height = image.size
@@ -42,7 +54,7 @@ def convert_gray_to_black(image):
     for i in range(width):
         for j in range(height):
             pixel = image.getpixel((i, j)) # Get Pixel from original image
-            if pixel < 255: # grey pixels
+            if pixel < 255:  # grey pixels
                 pixels[i, j] = 0  # reset to black
             else:  # white pixels
                 pixels[i, j] = 1  # leave them white

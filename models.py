@@ -6,7 +6,7 @@ import mplfinance as mpl
 import os
 from tqdm import tqdm
 import pandas as pd
-from utils import style, overwrite_dir, get_raw_data, convert_rgba_to_bw
+from utils import style, width_config, overwrite_dir, get_raw_data, convert_rgba_to_bw
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import precision_recall_fscore_support
@@ -53,22 +53,14 @@ class BaseCNN:
                           figsize=(self.img_width / dpi, self.img_height / dpi),
                           panel_ratios=((self.img_height - self.volume_height - 1) / self.img_height,
                                         self.volume_height / self.img_height),
-                          update_width_config={
-                              # width is given in Points, 1 Pixel = 72 Points, source:
-                              # https://stackoverflow.com/questions/57657419/how-to-draw-a-figure-in-specific-pixel-size-with-matplotlib
-                              'volume_width': 1 * 72 / dpi / 2,  # tested: width of volume bar is 1 pixel
-                              'volume_linewidth': 0,  # tested: no grey area around volume bar
-                              'line_width': 1 * 72 / dpi / 2,  # same result with 0 line width
-                              'ohlc_linewidth': 1 * 72 / dpi / 2,
-                              'ohlc_ticksize': 1 * 72 / dpi / 2},
-                          # width-related code in mlpfinance:
-                          # https://github.com/matplotlib/mplfinance/blob/d777f433e92588a09803cefb56053a49e3618d39/src/mplfinance/_widths.py#L86
+                          update_width_config=width_config,
+                          xlim=(-1/3, self.img_width/3-1/3),
                           axisoff=True,
                           tight_layout=True,
                           returnfig=True,
                           closefig=True,
                           scale_padding=0)
-        fig.savefig(savepath, dpi=100)
+        fig.savefig(savepath, dpi=dpi)
         convert_rgba_to_bw(savepath)
 
     def generate_images(self):
@@ -137,26 +129,12 @@ class BaseCNN:
         test_dataset = full_dataset.skip(train_size)
         return train_dataset, test_dataset
 
+    def compile(self):
+        raise Exception('Model design missing')
+
     def fit(self, epochs=2):
         train_dataset, test_dataset = self.load_dataset()
-        # Model design
-        self.model = models.Sequential()
-        # input_shape = (height, width, channels)
-        # channels = 1 for grayscale, channels = 3 for RGB
-        self.model.add(layers.InputLayer(input_shape=(self.img_height, self.img_width, 1),
-                                         batch_size=self.batch_size))
-        # Normalize pixel values to be between 0 and 1
-        self.model.add(layers.Rescaling(1. / 255))
-        self.model.add(layers.Conv2D(64, (5, 3), activation='relu'))
-        self.model.add(layers.MaxPooling2D((2, 1), padding='same'))
-        self.model.add(layers.Flatten())  # the output of the last CNN block is flattened to a 1D vector
-        self.model.add(layers.Dense(512))  # Dense layer = fully connected (FC) layer
-        self.model.add(layers.Dense(1, activation='softmax'))  # yields the probabilities of up and down
-        self.model.summary()
-        self.model.compile(optimizer='adam',
-                           loss=tf.keras.losses.BinaryCrossentropy(from_logits=False),  # default False
-                           metrics=['accuracy'])
-
+        self.compile()
         self.history = self.model.fit(x=train_dataset, y=None, batch_size=self.batch_size,
                                       epochs=epochs,
                                       verbose=2,
@@ -212,39 +190,27 @@ class CNN_5_20(BaseCNN):
         super().__init__(name='CNN_5_20', image_horizon=5, return_horizon=20,
                          img_height=32, img_width=15, volume_height=12, batch_size=batch_size)
 
-    def fit(self, epochs=2):
-        train_dataset, test_dataset = self.load_dataset()
-
+    def compile(self):
         # Model design
-        self.model = models.Sequential()
+        self.model = models.Sequential(name=self.name)
         # input_shape = (height, width, channels)
         # channels = 1 for grayscale, channels = 3 for RGB
         self.model.add(layers.InputLayer(input_shape=(self.img_height, self.img_width, 1),
                                          batch_size=self.batch_size))
         # Normalize pixel values to be between 0 and 1
+        # TODO: examples from the paper (page 14) - no rescaling
         self.model.add(layers.Rescaling(1. / 255))
-        self.model.add(layers.Conv2D(64, (5, 3), activation='relu'))
+        self.model.add(layers.Conv2D(64, (5, 3), activation=layers.LeakyReLU(alpha=0.01)))
         self.model.add(layers.MaxPooling2D((2, 1), padding='same'))
-        self.model.add(layers.Conv2D(128, (5, 3), activation='relu'))
+        self.model.add(layers.Conv2D(128, (5, 3), activation=layers.LeakyReLU(alpha=0.01)))
         self.model.add(layers.MaxPooling2D(2, 1, padding='same'))
         self.model.add(layers.Flatten())  # the output of the last CNN block is flattened to a 1D vector
-        self.model.add(layers.Dense(512))  # Dense layer = fully connected (FC) layer
-        self.model.add(layers.Dense(1, activation='softmax'))  # yields the probabilities of up and down
+        self.model.add(layers.Dense(1))  # Dense layer = fully connected (FC) layer
+        self.model.add(layers.Softmax())  # boolean mask
         self.model.summary()
         self.model.compile(optimizer='adam',
                            loss=tf.keras.losses.BinaryCrossentropy(from_logits=False),  # default False
                            metrics=['accuracy', 'Precision', 'Recall'])
-
-        self.history = self.model.fit(x=train_dataset, y=None, batch_size=self.batch_size,
-                                      epochs=epochs,
-                                      verbose=2,
-                                      validation_data=test_dataset,
-                                      max_queue_size=5,  # default is 10
-                                      workers=3,
-                                      use_multiprocessing=True)  # default is False
-        self.history = self.history.history
-        json.dump(self.history, open(self.history_path, 'w'))
-        self.model.save(self.model_path)
 
 
 class CNN_20_20(BaseCNN):
@@ -253,41 +219,28 @@ class CNN_20_20(BaseCNN):
         super().__init__(name='CNN_20_20', image_horizon=20, return_horizon=20,
                          img_height=64, img_width=60, volume_height=12, batch_size=batch_size)
 
-    def fit(self, epochs=2):
-        train_dataset, test_dataset = self.load_dataset()
-
+    def compile(self):
         # Model design
-        self.model = models.Sequential()
+        self.model = models.Sequential(name=self.name)
         # input_shape = (height, width, channels)
         # channels = 1 for grayscale, channels = 3 for RGB
         self.model.add(layers.InputLayer(input_shape=(self.img_height, self.img_width, 1),
                                          batch_size=self.batch_size))
         # Normalize pixel values to be between 0 and 1
         self.model.add(layers.Rescaling(1. / 255))
-        self.model.add(layers.Conv2D(64, (5, 3), activation='relu'))
+        self.model.add(layers.Conv2D(64, (5, 3), activation=layers.LeakyReLU(alpha=0.01)))
         self.model.add(layers.MaxPooling2D((2, 1), padding='same'))
-        self.model.add(layers.Conv2D(128, (5, 3), activation='relu'))
+        self.model.add(layers.Conv2D(128, (5, 3), activation=layers.LeakyReLU(alpha=0.01)))
         self.model.add(layers.MaxPooling2D(2, 1, padding='same'))
-        self.model.add(layers.Conv2D(256, (5, 3), activation='relu'))
+        self.model.add(layers.Conv2D(256, (5, 3), activation=layers.LeakyReLU(alpha=0.01)))
         self.model.add(layers.MaxPooling2D((2, 1), padding='same'))
         self.model.add(layers.Flatten())  # the output of the last CNN block is flattened to a 1D vector
-        self.model.add(layers.Dense(512))  # Dense layer = fully connected (FC) layer
-        self.model.add(layers.Dense(1, activation='softmax'))  # yields the probabilities of up and down
+        self.model.add(layers.Dense(1))  # Dense layer = fully connected (FC) layer
+        self.model.add(layers.Softmax())  # boolean mask
         self.model.summary()
         self.model.compile(optimizer='adam',
                            loss=tf.keras.losses.BinaryCrossentropy(from_logits=False),  # default False
                            metrics=['accuracy', 'Precision', 'Recall'])
-
-        self.history = self.model.fit(x=train_dataset, y=None, batch_size=self.batch_size,
-                                      epochs=epochs,
-                                      verbose=2,
-                                      validation_data=test_dataset,
-                                      max_queue_size=5,  # default is 10
-                                      workers=3,
-                                      use_multiprocessing=True)  # default is False
-        self.history = self.history.history
-        json.dump(self.history, open(self.history_path, 'w'))
-        self.model.save(self.model_path)
 
 
 class CNN_60_20(BaseCNN):
@@ -295,59 +248,39 @@ class CNN_60_20(BaseCNN):
         super().__init__(name='CNN_60_20', image_horizon=60, return_horizon=20,
                          img_height=96, img_width=180, volume_height=19, batch_size=batch_size)
 
-    def fit(self, epochs=2):
-        train_dataset, test_dataset = self.load_dataset()
-
+    def compile(self):
         # Model design
-        self.model = models.Sequential()
+        self.model = models.Sequential(name=self.name)
         # input_shape = (height, width, channels)
         # channels = 1 for grayscale, channels = 3 for RGB
         self.model.add(layers.InputLayer(input_shape=(self.img_height, self.img_width, 1),
                                          batch_size=self.batch_size))
         # Normalize pixel values to be between 0 and 1
         self.model.add(layers.Rescaling(1. / 255))
-        self.model.add(layers.Conv2D(64, (5, 3), activation='relu'))
+        self.model.add(layers.Conv2D(64, (5, 3), activation=layers.LeakyReLU(alpha=0.01)))
         self.model.add(layers.MaxPooling2D((2, 1), padding='same'))
-        self.model.add(layers.Conv2D(128, (5, 3), activation='relu'))
+        self.model.add(layers.Conv2D(128, (5, 3), activation=layers.LeakyReLU(alpha=0.01)))
         self.model.add(layers.MaxPooling2D(2, 1, padding='same'))
-        self.model.add(layers.Conv2D(256, (5, 3), activation='relu'))
+        self.model.add(layers.Conv2D(256, (5, 3), activation=layers.LeakyReLU(alpha=0.01)))
         self.model.add(layers.MaxPooling2D((2, 1), padding='same'))
-        self.model.add(layers.Conv2D(512, (5, 3), activation='relu'))
+        self.model.add(layers.Conv2D(512, (5, 3), activation=layers.LeakyReLU(alpha=0.01)))
         self.model.add(layers.MaxPooling2D((2, 1), padding='same'))
         self.model.add(layers.Flatten())  # the output of the last CNN block is flattened to a 1D vector
-        self.model.add(layers.Dense(512))  # Dense layer = fully connected (FC) layer
-        self.model.add(layers.Dense(1, activation='softmax'))  # yields the probabilities of up and down
+        self.model.add(layers.Dense(1))  # Dense layer = fully connected (FC) layer
+        self.model.add(layers.Softmax())  # boolean mask
         self.model.summary()
         self.model.compile(optimizer='adam',
                            loss=tf.keras.losses.BinaryCrossentropy(from_logits=False),  # default False
                            metrics=['accuracy', 'Precision', 'Recall'])
 
-        self.history = self.model.fit(x=train_dataset, y=None, batch_size=self.batch_size,
-                                      epochs=epochs,
-                                      verbose=2,
-                                      validation_data=test_dataset,
-                                      max_queue_size=5,  # default is 10
-                                      workers=3,
-                                      use_multiprocessing=True)  # default is False
-        self.history = self.history.history
-        json.dump(self.history, open(self.history_path, 'w'))
-        self.model.save(self.model_path)
-
 
 if __name__ == '__main__':
 
     cnn = CNN_5_20()
-    data = get_raw_data()
-    dataslice = data.iloc[0:5]
-    cnn.gen_image(dataslice, 'testsave_05.png')
+    cnn.compile()
 
     cnn = CNN_20_20()
-    data = get_raw_data()
-    dataslice = data.iloc[0:20]
-    cnn.gen_image(dataslice, 'testsave_20.png')
+    cnn.compile()
 
     cnn = CNN_60_20()
-    data = get_raw_data()
-    dataslice = data.iloc[0:60]
-    cnn.gen_image(dataslice, 'testsave_60.png')
-
+    cnn.compile()
