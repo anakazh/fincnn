@@ -1,6 +1,3 @@
-import os
-import shutil
-import pandas as pd
 from PIL import Image, ImageOps
 
 style = {'base_mpl_style': 'ggplot',
@@ -69,22 +66,3 @@ def convert_rgba_to_bw(savepath):
     image = image.convert('1')  # convert back to 1-bit pixels, black and white
     image.save(savepath)
     image.close()
-
-
-def overwrite_dir(path):
-    if os.path.exists(path):
-        shutil.rmtree(path)
-    os.makedirs(path)
-
-
-def get_raw_data():
-    # source: https://www.nasdaq.com/market-activity/stocks/aapl/historical
-    data = pd.read_csv('data/raw/AAPL.csv',
-                       index_col='Date',
-                       converters={'Close/Last': lambda s: float(s.replace('$', '')),
-                                   'Open': lambda s: float(s.replace('$', '')),
-                                   'High': lambda s: float(s.replace('$', '')),
-                                   'Low': lambda s: float(s.replace('$', ''))},
-                       parse_dates=True,
-                       ).rename({'Close/Last': 'Close'}, axis=1)
-    return data.sort_index()
