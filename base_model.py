@@ -1,4 +1,3 @@
-import tensorflow as tf
 from tensorflow.keras import models, callbacks
 from tensorflow.keras.utils import image_dataset_from_directory
 from tensorflow.data.experimental import cardinality
@@ -9,10 +8,13 @@ import json
 from pathlib import Path
 from multiprocessing import cpu_count
 from utils.image_utils import img_specs
+import shutil
 
 
 CPU_COUNT = cpu_count()  # used for model training and image generation
                          # TODO: check if cpu_count() works in colab
+
+PROCESSED_IMAGES_PATH = Path(f'data/processed/')
 
 
 class BaseCNN:
@@ -20,19 +22,22 @@ class BaseCNN:
     Basic functions for CNN classification model: image generation, training, evaluation of model accuracy
     Add model design to BaseCNN.compile() method
     """
-    def __init__(self, name, image_horizon, return_horizon, batch_size=1, crossentropy='categorical'):
+    def __init__(self, name, image_horizon, return_horizon,
+                 batch_size=1, crossentropy='categorical', train_noise_threshold=0):
         self.name = name
         self.image_horizon = image_horizon
         self.return_horizon = return_horizon
+        self.train_noise_threshold = train_noise_threshold
         self.img_height = img_specs[image_horizon].img_height
         self.img_width = img_specs[image_horizon].img_width
         self.volume_height = img_specs[image_horizon].volume_height
 
-        self.train_dataset_path = Path(f'data/processed/{self.image_horizon}_day/ret_{self.return_horizon}train/')
-        self.test_dataset_path = Path(f'data/processed/{self.image_horizon}_day/ret_{self.return_horizon}/test/')
-
         self.model_dir_path = Path(f'models/{self.name}/')
-        self.model_dir_path.mkdir(parents=True, exist_ok=True)
+        self.train_dataset_path = Path(f'models/{self.name}/images/train/')
+        self.train_dataset_path.mkdir(parents=True, exist_ok=False)
+        self.test_dataset_path = Path(f'models/{self.name}/images/test/')
+        self.test_dataset_path.mkdir(parents=True, exist_ok=False)
+
         self.model_path = self.model_dir_path.joinpath(f'{self.name}.h5')
         self.history_path = self.model_dir_path.joinpath(f'history.json')
         self.metrics_path = self.model_dir_path.joinpath(f'metrics.json')
@@ -46,6 +51,22 @@ class BaseCNN:
         else:
             self.compile()  # assigns model to self.model attribute
             self.history = None
+
+    def label_images(self, source_path, target_path, ret_threshold):
+        for sign in ['pos', 'neg']:
+            target_path.joinpath(sign).mkdir(parents=True, exist_ok=True)
+
+        for filename in source_path.iterdir():
+            rets = filename[:-4].split('_')[2:]
+            rets = iter(rets)
+            rets = dict(zip(rets, rets))
+            ret = float(rets[f'ret{self.return_horizon}'])
+            if ret > abs(ret_threshold):
+                savepath = target_path.joinpath('pos', filename)
+            elif ret < -abs(ret_threshold):
+                savepath = target_path.joinpath('neg', filename)
+            # ignore ret == 0
+            shutil.copy(source_path.join(filename), savepath)
 
     def compile(self):
         raise Exception('Model design missing')
@@ -79,11 +100,13 @@ class BaseCNN:
         return dataset
 
     def fit(self, train_validation_split=0.7):
-        # TODO: add noise filtering
-
-        if not (any(self.train_dataset_path.joinpath('pos').iterdir())
-                and any(self.train_dataset_path.joinpath('neg').iterdir())):
+        if not any(PROCESSED_IMAGES_PATH.joinpath(f'{self.image_horizon}_day/train/').iterdir()):
             raise Exception('No train dataset found, generate images first!')
+
+        self.label_images(source_path=PROCESSED_IMAGES_PATH.join(f'{self.image_horizon}_day/train/'),
+                          target_path=self.train_dataset_path,
+                          ret_threshold=self.train_noise_threshold)
+
         self.describe_train_dataset()
 
         dataset = self.load_dataset(path=self.train_dataset_path)
@@ -118,16 +141,17 @@ class BaseCNN:
         if self.history is None:
             raise Exception(f'No {self.name} found, train the model first!')
 
-        if not(any(self.test_dataset_path.joinpath('pos').iterdir())
-               and any(self.test_dataset_path.joinpath('neg').iterdir())):
+        if not any(PROCESSED_IMAGES_PATH.joinpath(f'{self.image_horizon}_day/train/').iterdir()):
             raise Exception('No test dataset found, generate images first!')
 
-        test_dataset = self.load_dataset(self.test_dataset_path)
+        self.label_images(source_path=PROCESSED_IMAGES_PATH.join(f'{self.image_horizon}_day/test/'),
+                          target_path=self.test_dataset_path,
+                          ret_threshold=0)
         self.describe_test_dataset()
 
+        test_dataset = self.load_dataset(self.test_dataset_path)
         y_pred = self.model.predict(test_dataset)
         y_true = np.array([a for a in test_dataset.map(lambda x, y: y).unbatch().as_numpy_iterator()])
-
         if self.crossentropy == 'categorical':
             y_pred = y_pred.round()  # y_pred is probability, transform to 0 and 1
             accuracy = metrics.accuracy_score(y_true, y_pred)
