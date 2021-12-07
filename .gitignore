@@ -1,0 +1,5 @@
+data/crsp/*
+data/raw/*
+samples/*
+models/*
+generate_datasets.prof

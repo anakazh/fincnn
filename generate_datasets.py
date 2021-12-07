@@ -1,16 +1,15 @@
 import mplfinance as mpl
 from utils.image_utils import style, width_config, convert_rgba_to_bw, img_specs
-from utils.data_utils import handle_missing_values, Sample
+from utils.data_utils import handle_missing_values
 from tqdm.contrib.concurrent import process_map
-from pathlib import Path
 import pandas as pd
-import shutil
 from functools import partial
 import multiprocessing as mp
-from generate_datasets_sample_params import *
+from generate_datasets_sample_params import RAW_DATA_PATH, PROCESSED_DATA_PATH, TEST_SAMPLE, TRAIN_SAMPLE
+
 
 CPU_COUNT = mp.cpu_count()  # used for image generation here
-RAW_DATA_PATH = Path('data/raw/')
+
 
 def gen_image(data, img_spec):
     """
@@ -70,27 +69,14 @@ def generate_images_for_permno(permno, img_horizon, img_spec, sample, target_pat
 
 
 def main():
-    with open(TRAIN_SAMPLE_PERMNO_LIST_PATH, 'r') as f:
-        permno_list = f.read().split()
-
-    train_sample = Sample(name='train',
-                          start_date=TRAIN_SAMPLE_START_DATE,
-                          end_date=TRAIN_SAMPLE_END_DATE,
-                          permno_list=permno_list,
-                          return_horizons=RETURN_HORIZONS)
-    train_sample.describe(savepath='samples/train_summary.csv')
-
-    test_sample = Sample(name='test',
-                         start_date=TEST_SAMPLE_START_DATE,
-                         end_date=TEST_SAMPLE_END_DATE,
-                         permno_list=permno_list,
-                         return_horizons=RETURN_HORIZONS)
-    test_sample.describe(savepath='samples/test_summary.csv')
 
     for img_horizon, img_spec in img_specs.items():
 
-        for sample in [train_sample, test_sample]:
-            target_path = Path(f'data/processed/{img_horizon}_day/{sample.name}')
+        if img_horizon == 20 or img_horizon == 60:
+            continue  # try generating only 5-day images for now
+
+        for sample in [TRAIN_SAMPLE, TEST_SAMPLE]:
+            target_path = PROCESSED_DATA_PATH.join('{img_horizon}_day/{sample.name}')
             target_path.mkdir(parents=True, exist_ok=False)
 
             generate_images_partial = partial(generate_images_for_permno,
@@ -117,6 +103,7 @@ if __name__ == '__main__':
 
     #import cProfile
     #import pstats
+    #from utils.data_utils import Sample
 
     #pr = cProfile.Profile()
 
@@ -124,10 +111,10 @@ if __name__ == '__main__':
     #pr.enable()
 
     #sample = Sample(name='train',
-    #                          start_date='19930101',
-    #                          end_date='19940101',
-    #                          permno_list=['14593', '10107'],
-    #                          return_horizons=[20, 60])
+    #                start_date='19930101',
+    #                end_date='19940101',
+    #                permno_list=['14593', '10107'],
+    #                return_horizons=[20, 60])
     #img_horizon = 5
     #img_spec = img_specs[img_horizon]
     #target_path = Path(f'data/processed/profiling')
