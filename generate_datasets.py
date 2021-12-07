@@ -2,6 +2,7 @@ import mplfinance as mpl
 from utils.image_utils import style, width_config, convert_rgba_to_bw, img_specs
 from utils.data_utils import handle_missing_values
 from tqdm.contrib.concurrent import process_map
+from tqdm import tqdm
 import pandas as pd
 from functools import partial
 import multiprocessing as mp
@@ -68,7 +69,35 @@ def generate_images_for_permno(permno, img_horizon, img_spec, sample, target_pat
         convert_rgba_to_bw(savepath)
 
 
-def main():
+def generate_datasets():
+    for img_horizon, img_spec in img_specs.items():
+
+        if img_horizon == 20 or img_horizon == 60:
+            continue  # try generating only 5-day images for now
+
+        for sample in [TRAIN_SAMPLE, TEST_SAMPLE]:
+            target_path = PROCESSED_DATA_PATH.join('{img_horizon}_day/{sample.name}')
+            target_path.mkdir(parents=True, exist_ok=False)
+            for permno in tqdm(sample.permno_list,
+                               desc=f'{img_horizon}-day image generation for {sample.name}-sample in progress '):
+            generate_images_for_permno(permno,
+                                       img_horizon=img_horizon,
+                                       img_spec=img_spec,
+                                       sample=sample,
+                                       target_path=target_path)
+            # generate_images_partial has only one argument: permno (others are fixed)
+            process_map(generate_images_partial,
+                        sample.permno_list,
+                        desc=f'{img_horizon}-day image generation for {sample.name}-sample in progress ',
+                        max_workers=CPU_COUNT)
+
+def generate_datasets_mp():
+    # import matplotlib.pyplot as plt
+    # print(plt.get_backend())
+
+    # apparently need to change start method for some matplotlib backends
+    # https://matplotlib.org/stable/gallery/misc/multiprocess_sgskip.html
+    mp.set_start_method("forkserver")
 
     for img_horizon, img_spec in img_specs.items():
 
@@ -88,46 +117,41 @@ def main():
             process_map(generate_images_partial,
                         sample.permno_list,
                         desc=f'{img_horizon}-day image generation for {sample.name}-sample in progress ',
-                        max_workers=2)
+                        max_workers=CPU_COUNT)
+
+def profile_generate_datasets():
+    import cProfile
+    import pstats
+    from utils.data_utils import Sample
+
+    profiler = cProfile.Profile()
+
+    profiler.enable()
+
+    sample = Sample(name='train',
+                    start_date='19930101',
+                    end_date='19940101',
+                    permno_list=['14593', '10107'],
+                    return_horizons=[20, 60])
+    img_horizon = 5
+    img_spec = img_specs[img_horizon]
+    target_path = PROCESSED_DATA_PATH.join('profiling/')
+    target_path.mkdir()
+    for permno in sample.permno_list:
+        for ret in [f'ret_{x}' for x in sample.return_horizons]:
+            for sign in ['pos', 'neg']:
+                target_path.joinpath(ret, sample.name, sign).mkdir(parents=True, exist_ok=True)
+        generate_images_for_permno(permno, img_horizon=img_horizon, img_spec=img_spec,
+                                       sample=sample, target_path = target_path)
+
+    profiler.disable()
+
+    stats = pstats.Stats(profiler)
+    stats.sort_stats(pstats.SortKey.TIME)
+    stats.dump_stats(filename='generate_datasets.prof')
 
 
 if __name__ == '__main__':
-    # import matplotlib.pyplot as plt
-    # print(plt.get_backend())
 
-    # apparently need to change start method for some matplotlib backends
-    # https://matplotlib.org/stable/gallery/misc/multiprocess_sgskip.html
+    generate_datasets_mp()
 
-    mp.set_start_method("forkserver")
-    main()
-
-    #import cProfile
-    #import pstats
-    #from utils.data_utils import Sample
-
-    #pr = cProfile.Profile()
-
-    #profiler = cProfile.Profile()
-    #pr.enable()
-
-    #sample = Sample(name='train',
-    #                start_date='19930101',
-    #                end_date='19940101',
-    #                permno_list=['14593', '10107'],
-    #                return_horizons=[20, 60])
-    #img_horizon = 5
-    #img_spec = img_specs[img_horizon]
-    #target_path = Path(f'data/processed/profiling')
-    #target_path.mkdir()
-    #for permno in sample.permno_list:
-    #    for ret in [f'ret_{x}' for x in sample.return_horizons]:
-    #        for sign in ['pos', 'neg']:
-    #            target_path.joinpath(ret, sample.name, sign).mkdir(parents=True, exist_ok=True)
-    #    generate_images_for_permno(permno, img_horizon=img_horizon, img_spec=img_spec,
-    #                                   sample=sample, target_path = target_path)
-
-    #profiler.disable()
-
-    #stats = pstats.Stats(pr)
-    #stats.sort_stats(pstats.SortKey.TIME)
-    #stats.dump_stats(filename='generate_datasets.prof')

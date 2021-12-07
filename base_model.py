@@ -9,12 +9,10 @@ from pathlib import Path
 from multiprocessing import cpu_count
 from utils.image_utils import img_specs
 import shutil
+from generate_datasets_sample_params import PROCESSED_DATA_PATH
 
 
 CPU_COUNT = cpu_count()  # used for model training and image generation
-                         # TODO: check if cpu_count() works in colab
-
-PROCESSED_IMAGES_PATH = Path(f'data/processed/')
 
 
 class BaseCNN:
@@ -100,10 +98,10 @@ class BaseCNN:
         return dataset
 
     def fit(self, train_validation_split=0.7):
-        if not any(PROCESSED_IMAGES_PATH.joinpath(f'{self.image_horizon}_day/train/').iterdir()):
+        if not any(PROCESSED_DATA_PATH.joinpath(f'{self.image_horizon}_day/train/').iterdir()):
             raise Exception('No train dataset found, generate images first!')
 
-        self.label_images(source_path=PROCESSED_IMAGES_PATH.join(f'{self.image_horizon}_day/train/'),
+        self.label_images(source_path=PROCESSED_DATA_PATH.join(f'{self.image_horizon}_day/train/'),
                           target_path=self.train_dataset_path,
                           ret_threshold=self.train_noise_threshold)
 
@@ -141,10 +139,10 @@ class BaseCNN:
         if self.history is None:
             raise Exception(f'No {self.name} found, train the model first!')
 
-        if not any(PROCESSED_IMAGES_PATH.joinpath(f'{self.image_horizon}_day/train/').iterdir()):
+        if not any(PROCESSED_DATA_PATH.joinpath(f'{self.image_horizon}_day/train/').iterdir()):
             raise Exception('No test dataset found, generate images first!')
 
-        self.label_images(source_path=PROCESSED_IMAGES_PATH.join(f'{self.image_horizon}_day/test/'),
+        self.label_images(source_path=PROCESSED_DATA_PATH.join(f'{self.image_horizon}_day/test/'),
                           target_path=self.test_dataset_path,
                           ret_threshold=0)
         self.describe_test_dataset()
@@ -170,7 +168,7 @@ class BaseCNN:
         model_metrics = {'accuracy': accuracy, 'precision': precision,
                          'recall': recall, 'f1score': f1score}
 
-        if self.crossentropy =='categorical':
+        if self.crossentropy == 'categorical':
             print(metrics.classification_report(y_true, y_pred))
         elif self.crossentropy == 'binary':
             print(pd.DataFrame(model_metrics))
