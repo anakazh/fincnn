@@ -36,6 +36,7 @@ tech_analysis_cnn/
 │  ├─ test_permno_list.txt
 │  ├─ tain_permno_list.txt
 ├─ utils/
+│  ├─ crsp_utils.py
 │  ├─ data_utils.py
 │  ├─ image_utils.py
 ├─ .gitignore
