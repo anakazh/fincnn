@@ -14,20 +14,34 @@ tech_analysis_cnn/
 ├─ data/
 │  ├─ processed/
 │  │  ├─ 5_day/
-│  │  │  ├─ ret_20/
-│  │  │  │  ├─ neg/
-│  │  │  │  ├─ pos/
-│  │  │  ├─ ret_60/
-│  │  │  │  ├─ neg/
-│  │  │  │  ├─ pos/
+│  │  │  ├─ test/
+│  │  │  │  ├─ AAPL_14593_20000107_ret20_0.1464_ret60_0.2795.png
+│  │  │  ├─ train/
+│  │  │  │  ├─ AAPL_14593_19930108_ret20_-0.0803_ret60_-0.1968.png
 │  ├─ raw/
+│  │  ├─ AAPL_14593.csv
 ├─ models/
+│  ├─ jkx_CNN_5_20/
+│  │  ├─ images/
+│  │  │  ├─ test/
+│  │  │  │  ├─ neg/
+│  │  │  │  ├─ pos/
+│  │  │  ├─ train/
+│  │  │  │  ├─ neg/
+│  │  │  │  ├─ pos/
+│  │  ├─ CNN_5_20.h5
+│  │  ├─ history.json
+│  │  ├─ metrics.json
+├─ samples/
+│  ├─ test_permno_list.txt
+│  ├─ tain_permno_list.txt
 ├─ utils/
 │  ├─ data_utils.py
 │  ├─ image_utils.py
 ├─ .gitignore
 ├─ base_model.py
 ├─ generate_datasets.py
+├─ generate_datasets_sample_params.py
 ├─ jiang_kelly_xiu_models.py
 ├─ jiang_kelly_xiu_train_evaluate.py
 ├─ README.md
