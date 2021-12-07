@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="tech-analysis-cnn",
-    version="0.2",
+    version="0.3",
     description="Technical analysis CNN models for stock return prediction",
     long_description=long_description,
     long_description_content_type="text/markdown",
