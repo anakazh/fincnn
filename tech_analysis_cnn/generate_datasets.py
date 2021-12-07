@@ -80,16 +80,9 @@ def generate_datasets():
             target_path.mkdir(parents=True, exist_ok=False)
             for permno in tqdm(sample.permno_list,
                                desc=f'{img_horizon}-day image generation for {sample.name}-sample in progress '):
-            generate_images_for_permno(permno,
-                                       img_horizon=img_horizon,
-                                       img_spec=img_spec,
-                                       sample=sample,
-                                       target_path=target_path)
-            # generate_images_partial has only one argument: permno (others are fixed)
-            process_map(generate_images_partial,
-                        sample.permno_list,
-                        desc=f'{img_horizon}-day image generation for {sample.name}-sample in progress ',
-                        max_workers=CPU_COUNT)
+                generate_images_for_permno(permno, img_horizon=img_horizon, img_spec=img_spec,
+                                           sample=sample, target_path=target_path)
+
 
 def generate_datasets_mp():
     # import matplotlib.pyplot as plt
