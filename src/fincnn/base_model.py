@@ -9,7 +9,7 @@ from pathlib import Path
 from multiprocessing import cpu_count
 from tech_analysis_cnn import img_specs
 import shutil
-from generate_datasets_sample_params import PROCESSED_DATA_PATH
+from generate_datasets_config import PROCESSED_DATA_PATH
 
 
 CPU_COUNT = cpu_count()  # used for model training and image generation

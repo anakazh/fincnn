@@ -1,12 +1,12 @@
 import mplfinance as mpl
-from utils.image_utils import style, width_config, convert_rgba_to_bw, img_specs
-from utils.data_utils import handle_missing_values
+from fincnn.generate_datasets_config import RAW_DATA_PATH, PROCESSED_DATA_PATH, TEST_SAMPLE, TRAIN_SAMPLE
+from fincnn.utils.image_utils import style, width_config, convert_rgba_to_bw, img_specs
+from fincnn.utils.data_utils import handle_missing_values
 from tqdm.contrib.concurrent import process_map
 from tqdm import tqdm
 import pandas as pd
 from functools import partial
 import multiprocessing as mp
-from generate_datasets_config import RAW_DATA_PATH, PROCESSED_DATA_PATH, TEST_SAMPLE, TRAIN_SAMPLE
 
 
 CPU_COUNT = mp.cpu_count()  # used for image generation here

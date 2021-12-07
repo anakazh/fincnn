@@ -3,14 +3,19 @@ import setuptools
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
+pkg_location = 'src'
+pkg_name = 'fincnn'
+
 setuptools.setup(
-    name="tech-analysis-cnn",
-    version="0.3",
+    name=pkg_name,
+    version="0.4",
     description="Technical analysis CNN models for stock return prediction",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/anakazh/tech_analysis_cnn",
-    packages=setuptools.find_packages(include=['tech_analysis_cnn']),
+    py_modules=[pkg_name],
+    package_dir={'': pkg_location},
+    packages=setuptools.find_packages(where=pkg_location),
     install_requires=[
         'pandas>=1.3.4',
         'numpy>=1.21.4',
