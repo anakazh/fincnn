@@ -1,6 +1,6 @@
 import mplfinance as mpl
-from utils.image_utils import style, width_config, convert_rgba_to_bw, img_specs
-from utils.data_utils import handle_missing_values
+from tech_analysis_cnn import style, width_config, convert_rgba_to_bw, img_specs
+from tech_analysis_cnn import handle_missing_values
 from tqdm.contrib.concurrent import process_map
 from tqdm import tqdm
 import pandas as pd
@@ -122,7 +122,7 @@ def generate_datasets_mp():
 def profile_generate_datasets():
     import cProfile
     import pstats
-    from utils.data_utils import Sample
+    from tech_analysis_cnn import Sample
 
     profiler = cProfile.Profile()
 
@@ -148,7 +148,7 @@ def profile_generate_datasets():
 
     stats = pstats.Stats(profiler)
     stats.sort_stats(pstats.SortKey.TIME)
-    stats.dump_stats(filename='generate_datasets.prof')
+    stats.dump_stats(filename='../generate_datasets.prof')
 
 
 if __name__ == '__main__':

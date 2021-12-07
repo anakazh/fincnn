@@ -1,4 +1,4 @@
-from base_model import BaseCNN
+from tech_analysis_cnn.base_model import BaseCNN
 from tensorflow.keras import layers, models, losses
 
 

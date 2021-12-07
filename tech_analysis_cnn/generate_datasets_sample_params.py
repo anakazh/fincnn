@@ -1,18 +1,18 @@
 import sqlite3
 from pathlib import Path
-from utils.data_utils import Sample
+from tech_analysis_cnn import Sample
 
-RAW_DATA_PATH = Path('data/raw/')
-PROCESSED_DATA_PATH = Path(f'data/processed/')
+RAW_DATA_PATH = Path('../data/raw/')
+PROCESSED_DATA_PATH = Path(f'../data/processed/')
 
 RETURN_HORIZONS = [20, 60]
 
-TRAIN_SAMPLE_PERMNO_LIST_PATH = Path('samples/train_permno_list.txt')
+TRAIN_SAMPLE_PERMNO_LIST_PATH = Path('../samples/train_permno_list.txt')
 TRAIN_SAMPLE_START_DATE = '19930101'
 TRAIN_SAMPLE_END_DATE = '19991231'
 
 
-TEST_SAMPLE_PERMNO_LIST_PATH = Path('samples/test_permno_list.txt')
+TEST_SAMPLE_PERMNO_LIST_PATH = Path('../samples/test_permno_list.txt')
 TEST_SAMPLE_START_DATE = '20000101'
 TEST_SAMPLE_END_DATE = '20200101'
 
@@ -36,7 +36,7 @@ TEST_SAMPLE = Sample(name='test',
 
 
 def select_2000_lagest_train_sample():
-    db_path = 'data/crsp/full_data.db'
+    db_path = '../data/crsp/full_data.db'
     sql_statement = """
     SELECT DISTINCT permno FROM OHLC
     WHERE Date BETWEEN '19930101' AND '19991231'
@@ -54,7 +54,7 @@ def select_2000_lagest_train_sample():
 
 
 def select_2000_lagest_test_sample():
-    db_path = 'data/crsp/full_data.db'
+    db_path = '../data/crsp/full_data.db'
     sql_statement = """
     SELECT DISTINCT permno FROM OHLC
     WHERE Date BETWEEN '19990101' AND '19991231'

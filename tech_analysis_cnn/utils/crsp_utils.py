@@ -72,7 +72,7 @@ def sqlite_to_ticker_csvs(db_path='data/crsp/full_data.db'):
         permnos.append(row[0])
     conn.close()
 
-    overwrite_dir('../data/raw')
+    overwrite_dir('../../data/raw')
 
     def _save_data_for_permno(permno):
         conn = sqlite3.connect(db_path)
