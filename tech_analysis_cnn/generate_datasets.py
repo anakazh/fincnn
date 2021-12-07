@@ -1,6 +1,6 @@
 import mplfinance as mpl
-from tech_analysis_cnn.utils.image_utils import style, width_config, convert_rgba_to_bw, img_specs
-from tech_analysis_cnn.utils.data_utils import handle_missing_values
+from utils.image_utils import style, width_config, convert_rgba_to_bw, img_specs
+from utils.data_utils import handle_missing_values
 from tqdm.contrib.concurrent import process_map
 from tqdm import tqdm
 import pandas as pd
