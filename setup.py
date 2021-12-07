@@ -21,5 +21,5 @@ setuptools.setup(
         'SQLAlchemy>=1.4.27',
         'matplotlib>=3.4.3'
                     ],
-    python_requires=">=3.9.5",
+    python_requires=">=3.7",
 )
