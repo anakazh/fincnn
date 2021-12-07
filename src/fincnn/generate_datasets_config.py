@@ -1,6 +1,6 @@
 import sqlite3
 from pathlib import Path
-from tech_analysis_cnn import Sample
+from fincnn.utils.data_utils import Sample
 
 RAW_DATA_PATH = Path('../data/raw/')
 PROCESSED_DATA_PATH = Path(f'../data/processed/')

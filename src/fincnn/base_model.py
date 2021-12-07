@@ -7,7 +7,7 @@ import numpy as np
 import json
 from pathlib import Path
 from multiprocessing import cpu_count
-from tech_analysis_cnn import img_specs
+from fincnn.utils.image_utils import img_specs
 import shutil
 from generate_datasets_config import PROCESSED_DATA_PATH
 

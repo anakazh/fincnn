@@ -1,5 +1,5 @@
-from tech_analysis_cnn.jiang_kelly_xiu_models import CNN_5, CNN_20, CNN_60
-from tech_analysis_cnn.generate_datasets_config import RETURN_HORIZONS
+from fincnn.jiang_kelly_xiu_models import CNN_5, CNN_20, CNN_60
+from fincnn.generate_datasets_config import RETURN_HORIZONS
 
 if __name__ == '__main__':
 
