@@ -90,7 +90,7 @@ def generate_datasets_mp():
 
     # apparently need to change start method for some matplotlib backends
     # https://matplotlib.org/stable/gallery/misc/multiprocess_sgskip.html
-    mp.set_start_method("forkserver")
+    # mp.set_start_method("forkserver") moved to main()
 
     for img_horizon, img_spec in img_specs.items():
 
@@ -144,8 +144,22 @@ def profile_generate_datasets():
     stats.sort_stats(pstats.SortKey.TIME)
     stats.dump_stats(filename='../generate_datasets.prof')
 
+    
+def main():
+    try:
+        # works on linux, fails on windows
+        mp.set_start_method("forkserver")
+        generate_datasets_mp()
+    except:
+        generate_datasets_mp()
+    finally:
+        # no multiprocessing
+        generate_datasets()
+        
 
 if __name__ == '__main__':
+    
+    main()
 
-    generate_datasets_mp()
+    
 
