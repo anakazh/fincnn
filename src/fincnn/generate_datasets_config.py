@@ -2,19 +2,21 @@ import sqlite3
 from pathlib import Path
 from fincnn.utils.data_utils import Sample
 
-RAW_DATA_PATH = Path('../data/raw/')
-PROCESSED_DATA_PATH = Path(f'../data/processed/')
+RAW_DATA_PATH = Path('data/raw/')
+PROCESSED_DATA_PATH = Path(f'data/processed/')
 
 RETURN_HORIZONS = [20, 60]
 
-TRAIN_SAMPLE_PERMNO_LIST_PATH = Path('../samples/train_permno_list.txt')
+TRAIN_SAMPLE_PERMNO_LIST_PATH = Path('samples/train_permno_list.txt')
 TRAIN_SAMPLE_START_DATE = '19930101'
 TRAIN_SAMPLE_END_DATE = '19991231'
 
 
-TEST_SAMPLE_PERMNO_LIST_PATH = Path('../samples/test_permno_list.txt')
+TEST_SAMPLE_PERMNO_LIST_PATH = Path('samples/test_permno_list.txt')
 TEST_SAMPLE_START_DATE = '20000101'
 TEST_SAMPLE_END_DATE = '20200101'
+
+# TODO: when samples are not defined generate images for all securities in data/raw
 
 with open(TRAIN_SAMPLE_PERMNO_LIST_PATH, 'r') as f:
     train_permno_list = f.read().split()

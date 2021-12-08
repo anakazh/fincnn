@@ -112,10 +112,11 @@ def generate_datasets_mp():
                         desc=f'{img_horizon}-day image generation for {sample.name}-sample in progress ',
                         max_workers=CPU_COUNT)
 
+
 def profile_generate_datasets():
     import cProfile
     import pstats
-    from tech_analysis_cnn import Sample
+    from fincnn.utils.data_utils import Sample
 
     profiler = cProfile.Profile()
 
