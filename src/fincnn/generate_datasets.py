@@ -10,7 +10,8 @@ import multiprocessing as mp
 
 
 CPU_COUNT = mp.cpu_count()  # used for image generation here
-CHUNK_SIZE = 1
+CHUNK_SIZE = 1  # larger chunksize does not improve performance
+
 
 def gen_image(data, img_spec):
     """
@@ -94,7 +95,7 @@ def generate_datasets_mp():
 
     for img_horizon, img_spec in img_specs.items():
 
-        if img_horizon == 20 or img_horizon == 60:
+        if img_horizon == 5 or img_horizon == 60:
             continue  # try generating only 5-day images for now
 
         for sample in [TRAIN_SAMPLE, TEST_SAMPLE]:
@@ -137,13 +138,13 @@ def profile_generate_datasets():
             for sign in ['pos', 'neg']:
                 target_path.joinpath(ret, sample.name, sign).mkdir(parents=True, exist_ok=True)
         generate_images_for_permno(permno, img_horizon=img_horizon, img_spec=img_spec,
-                                       sample=sample, target_path = target_path)
+                                   sample=sample, target_path=target_path)
 
     profiler.disable()
 
     stats = pstats.Stats(profiler)
     stats.sort_stats(pstats.SortKey.TIME)
-    stats.dump_stats(filename='../generate_datasets.prof')
+    stats.dump_stats(filename=f'generate_datasets.prof')
 
     
 def main():
@@ -155,12 +156,14 @@ def main():
         generate_datasets_mp()
     finally:
         # no multiprocessing
+        print('Running image generation without multiprocessing')
         generate_datasets()
         
 
 if __name__ == '__main__':
     
     main()
+
 
     
 
