@@ -10,7 +10,7 @@ import multiprocessing as mp
 
 
 CPU_COUNT = mp.cpu_count()  # used for image generation here
-
+CHUNK_SIZE = 1
 
 def gen_image(data, img_spec):
     """
@@ -76,7 +76,7 @@ def generate_datasets():
             continue  # try generating only 5-day images for now
 
         for sample in [TRAIN_SAMPLE, TEST_SAMPLE]:
-            target_path = PROCESSED_DATA_PATH.join('{img_horizon}_day/{sample.name}')
+            target_path = PROCESSED_DATA_PATH.joinpath(f'{img_horizon}_day/{sample.name}')
             target_path.mkdir(parents=True, exist_ok=False)
             for permno in tqdm(sample.permno_list,
                                desc=f'{img_horizon}-day image generation for {sample.name}-sample in progress '):
@@ -98,7 +98,7 @@ def generate_datasets_mp():
             continue  # try generating only 5-day images for now
 
         for sample in [TRAIN_SAMPLE, TEST_SAMPLE]:
-            target_path = PROCESSED_DATA_PATH.join('{img_horizon}_day/{sample.name}')
+            target_path = PROCESSED_DATA_PATH.joinpath(f'{img_horizon}_day/{sample.name}')
             target_path.mkdir(parents=True, exist_ok=False)
 
             generate_images_partial = partial(generate_images_for_permno,
@@ -110,7 +110,8 @@ def generate_datasets_mp():
             process_map(generate_images_partial,
                         sample.permno_list,
                         desc=f'{img_horizon}-day image generation for {sample.name}-sample in progress ',
-                        max_workers=CPU_COUNT)
+                        max_workers=CPU_COUNT,
+                        chunksize=CHUNK_SIZE)
 
 
 def profile_generate_datasets():
@@ -129,7 +130,7 @@ def profile_generate_datasets():
                     return_horizons=[20, 60])
     img_horizon = 5
     img_spec = img_specs[img_horizon]
-    target_path = PROCESSED_DATA_PATH.join('profiling/')
+    target_path = PROCESSED_DATA_PATH.joinpath('profiling/')
     target_path.mkdir()
     for permno in sample.permno_list:
         for ret in [f'ret_{x}' for x in sample.return_horizons]:

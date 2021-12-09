@@ -64,7 +64,7 @@ class BaseCNN:
             elif ret < -abs(ret_threshold):
                 savepath = target_path.joinpath('neg', filename)
             # ignore ret == 0
-            shutil.copy(source_path.join(filename), savepath)
+            shutil.copy(source_path.joinpath(filename), savepath)
 
     def compile(self):
         raise Exception('Model design missing')
@@ -101,7 +101,7 @@ class BaseCNN:
         if not any(PROCESSED_DATA_PATH.joinpath(f'{self.image_horizon}_day/train/').iterdir()):
             raise Exception('No train dataset found, generate images first!')
 
-        self.label_images(source_path=PROCESSED_DATA_PATH.join(f'{self.image_horizon}_day/train/'),
+        self.label_images(source_path=PROCESSED_DATA_PATH.joinpath(f'{self.image_horizon}_day/train/'),
                           target_path=self.train_dataset_path,
                           ret_threshold=self.train_noise_threshold)
 
@@ -142,7 +142,7 @@ class BaseCNN:
         if not any(PROCESSED_DATA_PATH.joinpath(f'{self.image_horizon}_day/train/').iterdir()):
             raise Exception('No test dataset found, generate images first!')
 
-        self.label_images(source_path=PROCESSED_DATA_PATH.join(f'{self.image_horizon}_day/test/'),
+        self.label_images(source_path=PROCESSED_DATA_PATH.joinpath(f'{self.image_horizon}_day/test/'),
                           target_path=self.test_dataset_path,
                           ret_threshold=0)
         self.describe_test_dataset()
