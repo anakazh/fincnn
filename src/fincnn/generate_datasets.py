@@ -73,8 +73,8 @@ def generate_images_for_permno(permno, img_horizon, img_spec, sample, target_pat
 def generate_datasets():
     for img_horizon, img_spec in img_specs.items():
 
-        if img_horizon == 20 or img_horizon == 60:
-            continue  # try generating only 5-day images for now
+        if img_horizon == 5 or img_horizon == 60:
+            continue  # try generating only 20-day images for now
 
         for sample in [TRAIN_SAMPLE, TEST_SAMPLE]:
             target_path = PROCESSED_DATA_PATH.joinpath(f'{img_horizon}_day/{sample.name}')
@@ -96,7 +96,7 @@ def generate_datasets_mp():
     for img_horizon, img_spec in img_specs.items():
 
         if img_horizon == 5 or img_horizon == 60:
-            continue  # try generating only 5-day images for now
+            continue  # try generating only 20-day images for now
 
         for sample in [TRAIN_SAMPLE, TEST_SAMPLE]:
             target_path = PROCESSED_DATA_PATH.joinpath(f'{img_horizon}_day/{sample.name}')
