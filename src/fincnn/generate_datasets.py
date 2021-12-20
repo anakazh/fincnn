@@ -82,7 +82,7 @@ def generate_datasets(img_specs, samples, verbose=False):
         for sample in samples:
             target_path = PROCESSED_DATA_PATH.joinpath(f'{img_horizon}_day/{sample.name}')
             target_path.mkdir(parents=True, exist_ok=False)
-            filepaths = [f for f in RAW_DATA_PATH.rglob(f'.*csv')]
+            filepaths = [f for f in RAW_DATA_PATH.rglob(f'*.csv')]
             for filepath in tqdm(filepaths,
                                  desc=f'{img_horizon}-day image generation for {sample.name}-sample '):
                 generate_images_for_one_stock(filepath, img_horizon=img_horizon, img_spec=img_spec,
@@ -132,7 +132,7 @@ def profile_generate_datasets():
     img_spec = IMG_SPECS[img_horizon]
     target_path = PROCESSED_DATA_PATH.joinpath('profiling/')
     target_path.mkdir()
-    filepaths = [f for f in RAW_DATA_PATH.rglob(f'.*csv')]
+    filepaths = [f for f in RAW_DATA_PATH.rglob(f'*.csv')]
     for filepath in filepaths:
         generate_images_for_one_stock(filepath, img_horizon=img_horizon, img_spec=img_spec,
                                       sample=sample, target_path=target_path)
