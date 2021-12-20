@@ -12,7 +12,6 @@ class Sample:
     Class for keeping track of train (and test) samples
     """
     name: str                      # 'train_2_stocks'
-    permno_list: list              # e.g. ['14593', '10107'],  # AAPL, MSFT
     return_horizons: list          # [20, 60]
     start_date: str                # e.g. '19930101'
     end_date: str                  # e.g. '19991231'

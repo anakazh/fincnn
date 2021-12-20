@@ -9,7 +9,7 @@ class ImgSpec:
     volume_height: int
 
 
-img_specs = {
+IMG_SPECS = {
     5: ImgSpec(img_height=32, img_width=15, volume_height=12),
     20: ImgSpec(img_height=64, img_width=60, volume_height=12),
     60: ImgSpec(img_height=96, img_width=180, volume_height=19),

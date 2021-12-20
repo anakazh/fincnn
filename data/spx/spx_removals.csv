@@ -1,0 +1,257 @@
+date,ticker,name
+2020-12-21,AIV,Apartment Investment & Management CLASS A
+2020-10-05,NBL,Noble Energy
+2020-10-02,ETFC,E-Trade
+2020-09-21,HRB,H&R Block
+2020-09-21,COTY,Coty CLASS A
+2020-09-21,KSS,Kohl's
+2020-06-22,ADS,Alliance Data Systems
+2020-06-22,HOG,Harley-Davidson
+2020-06-22,JWN,Nordstrom
+2020-05-22,HP,Helmerich & Payne
+2020-05-12,CPRI,Capri Holdings
+2020-05-11,AGN,Allergan
+2020-04-06,M,Macy's
+2020-04-06,RTN,Raytheon Company CLASS B
+2020-03-02,XEC,Cimarex Energy
+2020-01-24,WCG,WellCare
+2019-12-23,AMG,Affiliated Managers Group
+2019-12-23,TRIP,TripAdvisor
+2019-12-23,MAC,Macerich
+2019-12-09,STI,SunTrust Banks
+2019-12-05,VIAB,Viacom CLASS B
+2019-11-21,CELG,Celgene
+2019-10-03,NKTR,Nektar Therapeutics
+2019-09-26,JEF,Jefferies Financial Group
+2019-09-18,TSS,TSYS
+2019-08-09,APC,Anadarko Petroleum
+2019-08-09,FL,Foot Locker
+2019-07-09,RHT,Red Hat
+2019-07-01,LLL,L3 Technologies
+2019-06-07,MAT,Mattel
+2019-06-03,FLR,Fluor Corporation
+2019-04-02,BHF,Brighthouse Financial
+2019-03-18,FOX,FOX CORP CLASS B
+2019-03-18,FOXA,FOX CORP CLASS A
+2019-02-27,GT,The Goodyear Tire & Rubber Company
+2019-02-15,NFX,Newfield Exploration
+2019-01-18,PCG,Pacific Gas & Electric Company
+2019-01-02,SCG,SCANA
+2018-12-21,ESRX,Express Scripts
+2018-11-27,COL,Rockwell Collins
+2018-11-29,AET,Aetna
+2018-12-03,SRCL,Stericycle
+2018-11-13,EQT,EQT
+2018-11-06,CA,CA Technologies
+2018-10-11,EVHC,Envision Healthcare
+2018-10-01,ANDV,Andeavor
+2018-09-13,XL,XL Group CLASS A
+2018-08-28,GGP,GGP
+2018-07-02,DPS,Dr Pepper Snapple Group
+2018-06-15,TWX,Time Warner
+2018-06-18,RRC,Range Resources
+2018-06-18,AYI,Acuity Brands
+2018-06-07,MON,Monsanto
+2018-06-05,NAVI,Navient
+2018-05-31,WYN,Wyndham Worldwide
+2018-04-04,CSRA,CSRA
+2018-03-19,SIG,Signet Jewelers
+2018-03-19,PDCO,Patterson Companies
+2018-03-19,CHK,Chesapeake Energy
+2018-03-07,SNI,Scripps Networks Interactive CLASS A
+2017-12-29,BCR,CR Bard
+2017-10-13,LVLT,Level 3 Communications
+2017-09-13,SPLS,Staples
+2017-09-01,DOW,Dow Chemical Company
+2017-09-01,DD,DuPont
+2017-08-29,WFM,Whole Foods Market
+2017-08-08,AN,AutoNation
+2017-07-26,RIG,Transocean
+2017-07-26,BBBY,Bed Bath & Beyond
+2017-07-26,MUR,Murphy Oil
+2017-07-26,MNK,Mallinckrodt
+2017-07-26,RAI,Reynolds American
+2017-06-19,YHOO,Yahoo! Inc.
+2017-06-19,TDC,Teradata
+2017-06-19,R,Ryder System
+2017-06-16,MJN,Mead Johnson
+2017-06-02,TGNA,Tegna
+2017-04-05,DNB,Dun & Bradstreet
+2017-04-04,SWN,Southwestern Energy
+2017-03-20,URBN,Urban Outfitters
+2017-03-20,FTR,Frontier Communications
+2017-03-20,FSLR,First Solar
+2017-03-13,HAR,Harman International
+2017-03-13,LLTC,Linear Technology
+2017-03-02,ENDP,Endo International
+2017-03-01,PBI,Pitney Bowes
+2017-02-28,SE,Spectra Energy
+2017-01-05,STJ,St Jude Medical
+2016-12-02,OI,Owens-Illinois
+2016-12-02,LM,Legg Mason
+2016-10-28,AA,Alcoa Inc
+2016-09-30,DO,Diamond Offshore Drilling
+2016-09-22,HOT,Starwood
+2016-09-08,EMC,EMC Corporation
+2016-09-02,TYC,Tyco International
+2016-07-01,CPGX,Columbia Pipeline Group
+2016-07-01,GAS,AGL Resources
+2016-07-01,TE,TECO Energy
+2016-06-22,CVC,Cablevision Systems CLASS A
+2016-06-03,BXLT,Baxalta
+2016-05-26,CCE,Coca-Cola Enterprises
+2016-05-23,ARG,Airgas
+2016-05-18,TWC,Time Warner Cable
+2016-05-13,SNDK,SanDisk
+2016-05-03,ADT,ADT
+2016-04-25,GME,GameStop CLASS A
+2016-04-18,THC,Tenet Healthcare
+2016-04-04,CAM,Cameron International
+2016-03-24,POM,Pepco Holdings
+2016-03-30,ESV,Ensco plc CLASS A
+2016-03-03,GMCR,Keurig Green Mountain
+2016-03-04,CNX,Consol Energy
+2016-02-22,PCL,Plum Creek Timber
+2016-02-01,PCP,Precision Castparts Corporation
+2016-02-01,BRCM,Broadcom Corporation
+2016-01-14,ACE,ACE Ltd
+2016-01-14,CB,Chubb
+2016-01-05,FOSL,Fossil Group
+2015-12-29,ALTR,Altera
+2015-12-15,CMCSK,Comcast K Corp
+2015-12-01,CSC,Computer Sciences Corporation
+2015-11-19,SIAL,Sigma-Aldrich
+2015-11-18,GNW,Genworth Financial CLASS A
+2015-11-02,HCBK,Hudson City Bancorp
+2015-10-07,JOY,Joy Global
+2015-09-02,HSP,Hospira
+2015-08-28,PLL,Pall Corporation
+2015-07-27,DTV,DirecTV
+2015-07-20,NE,Noble Corporation
+2015-07-08,FDO,Family Dollar
+2015-07-06,KRFT,Kraft Foods
+2015-07-02,ATI,Allegheny Technologies
+2015-07-01,TEG,Integrys Energy Group
+2015-07-01,QEP,QEP Resources
+2015-06-11,LO,Lorillard Tobacco Company
+2015-04-07,WIN,Windstream Communications
+2015-03-17,AGN,Allergan
+2015-03-23,DNR,Denbury Resources
+2015-03-23,NBR,Nabors Industries
+2015-03-23,AVP,Avon Products
+2015-03-18,CFN,Carefusion
+2015-03-12,PETM,PetSmart
+2015-01-27,SWY,Safeway
+2015-01-27,COV,Covidien
+2014-12-05,BMS,Bemis Company
+2014-11-05,JBL,Jabil Circuit
+2014-09-26,BTU,Peabody Energy
+2014-09-20,GHC,Graham Holdings CLASS B
+2014-08-18,RDC,Rowan Companies CLASS A
+2014-07-02,X,United States Steel
+2014-07-01,FRX,Forest Laboratories
+2014-06-20,IGT,International Game Technology
+2014-05-08,LSI,LSI Corporation
+2014-05-01,BEAM,Beam Inc
+2014-05-01,SLM,SLM Corporation
+2014-04-02,CLF,Cliffs Natural Resources
+2014-03-21,WPX,WPX Energy
+2014-01-24,LIFE,Life Technologies
+2013-12-23,ANF,Abercrombie & Fitch CLASS A
+2013-12-23,JDSU,JDS Uniphase
+2013-12-23,TER,Teradyne
+2013-12-10,MOLX,Molex
+2013-12-02,JCP,JCPenney
+2013-11-13,NYX,NYSE Euronext
+2013-10-29,DELL,Dell
+2013-09-20,AMD,Advanced Micro Devices
+2013-09-20,SAI,SAIC
+2013-09-10,BMC,BMC Software
+2013-07-08,S,Sprint Nextel
+2013-06-28,APOL,Apollo Education Group CLASS A
+2013-06-21,FHN,First Horizon
+2013-06-06,HNZ,Heinz
+2013-05-23,DF,Dean Foods
+2013-05-08,CVH,Coventry Health Care
+2013-04-30,PCS,MetroPCS
+2013-02-15,BIG,Big Lots
+2012-12-31,FII,Federated Investors CLASS B
+2012-12-21,TIE,Titanium Metals
+2012-12-11,RRD,RR Donnelley
+2012-12-03,CBE,Cooper Industries
+2012-10-05,SUN,Sunoco
+2012-10-02,ANR,Alpha Natural Resources
+2012-10-01,LXK,Lexmark CLASS A
+2012-10-01,DV,DeVry
+2012-09-05,SHLD,Sears Holdings
+2012-06-28,GR,Goodrich Corporation
+2012-07-02,PGN,Progress Energy
+2012-06-29,SLE,Sara Lee Corporation
+2012-06-05,NVLS,Novellus Systems
+2012-05-21,MMI,Motorola Mobility
+2012-05-17,EP,El Paso Corporation
+2012-04-23,SVU,Supervalu
+2012-04-03,MHS,Medco Health Solutions
+2012-03-13,CEG,Constellation Energy Group
+2011-12-31,CPWR,Compuware
+2011-12-20,TLAB,Tellabs
+2011-12-16,AKS,AK Steel
+2011-12-16,MWW,Monster Worldwide
+2011-12-16,WFR,MEMC Electronic Materials
+2011-12-12,GAS,Nicor Gas
+2011-11-18,JNS,Janus Capital Group
+2011-10-31,ITT,ITT
+2011-10-14,CEPH,Cephalon
+2011-09-23,NSM,National Semiconductor
+2011-07-05,MI,Marshall & Ilsley
+2011-06-30,RSH,RadioShack
+2011-06-01,MEE,Massey Energy Company
+2011-04-27,NOVL,Novell
+2011-04-01,GENZ,Genzyme
+2011-03-31,Q,Qwest Communications
+2011-02-28,MFE,McAfee
+2011-02-25,AYE,Allegheny Energy
+2010-12-17,KG,King Pharmaceuticals
+2010-12-17,EK,Eastman Kodak
+2010-12-17,ODP,Office Depot
+2010-12-17,NYT,The New York Times Company CLASS A
+2010-11-17,PTV,Pactiv
+2010-08-26,SII,Smith International
+2010-07-14,MIL,Millipore
+2010-06-30,STR,Questar
+2010-06-28,XTO,XTO Energy
+2010-04-29,BJS,BJ Services
+2010-02-26,RX,IMS Health
+2009-12-18,CIEN,Ciena
+2009-12-18,DYN,Dynegy CLASS A
+2009-12-18,KBH,KB Home
+2009-12-18,CVG,Convergys
+2009-12-18,MBI,MBIA Inc.
+2009-11-03,SGP,Schering-Plough
+2009-09-28,CBE,Cooper Industries
+2009-03-03,ACAS,American Capital
+2009-03-03,JNY,Jones Apparel Group
+2008-12-31,WB,Wachovia Bank
+2008-09-16,LEH,Lehman Brothers
+2008-09-12,FRE,Freddie Mac
+2008-09-12,FNM,Fannie Mae
+2008-06-10,ABK,Ambac Financial
+2007-12-20,TRB,Tribune Media
+2007-12-13,DJ,Dow Jones
+2007-10-26,AV,Avaya
+2007-10-02,SLR,Solectron
+2007-10-01,NCR,NCR Corporation
+2007-09-27,MXIM,Maxim Integrated Products
+2007-09-26,FDC,First Data
+2007-08-24,KSE,KeySpan
+2007-03-30,TSG,Sabre Corporation CLASS A
+2007-01-10,SBL,Symbol Technologies
+2006-06-02,ABS,Albertsons
+2005-11-18,T,AT&T Corporation
+2005-07-01,GLK,Great Lakes Chemical
+2003-09-25,QTRN,Quintiles Transnational
+2000-12-05,BS,Bethlehem Steel
+2000-12-05,OI,Owens-Illinois
+2000-12-05,GRA,WR Grace
+2000-12-05,CCK,Crown Holdings
+2000-07-27,RAD,RiteAid

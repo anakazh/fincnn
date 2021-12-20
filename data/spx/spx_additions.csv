@@ -1,0 +1,262 @@
+date,ticker,name
+2020-12-21,TSLA,Tesla
+2020-10-09,VNT,Vontier
+2020-10-07,POOL,Pool Corporation
+2020-09-21,ETSY,Etsy
+2020-09-21,TER,Teradyne
+2020-09-21,CTLT,Catalent
+2020-06-22,BIO,Bio-Rad Laboratories CLASS A
+2020-06-22,TDY,Teledyne Technologies
+2020-06-22,TYL,Tyler Technologies
+2020-05-22,WST,West Pharmaceutical Services
+2020-05-12,DPZ,Domino's Pizza
+2020-05-12,DXCM,Dexcom
+2020-04-03,OTIS,Otis Worldwide
+2020-04-03,CARR,Carrier Global
+2020-03-03,IR,Ingersoll Rand
+2020-01-28,PAYC,Paycom
+2019-12-23,LYV,Live Nation Entertainment
+2019-12-23,ZBRA,Zebra Technologies CLASS A
+2019-12-23,STE,Steris
+2019-12-09,ODFL,Old Dominion Freight Line
+2019-12-05,WRB,W. R. Berkley Corporation
+2019-11-21,NOW,ServiceNow
+2019-10-03,LVS,Las Vegas Sands
+2019-09-26,NVR,NVR
+2019-09-23,CDW,CDW
+2019-08-09,LDOS,Leidos
+2019-08-09,IEX,IDEX Corporation
+2019-07-15,TMUS,T-Mobile US
+2019-07-01,MKTX,MarketAxess
+2019-06-11,AMCR,Amcor
+2019-06-03,CTVA,Corteva
+2019-04-02,DOW,Dow
+2019-03-19,FOX,FOX CORP CLASS B
+2019-03-19,FOXA,FOX CORP CLASS A
+2019-02-27,WAB,Wabtec
+2019-02-15,ATO,Atmos Energy
+2019-01-18,TFX,Teleflex
+2019-01-02,FRC,First Republic Bank
+2018-12-24,CE,Celanese
+2018-12-03,LW,Lamb Weston
+2018-12-03,MXIM,Maxim Integrated
+2018-12-03,FANG,Diamondback Energy
+2018-11-13,JKHY,Jack Henry & Associates
+2018-11-06,KEYS,Keysight Technologies
+2018-10-11,FTNT,Fortinet
+2018-10-01,ROL,Rollins
+2018-09-14,WCG,WellCare
+2018-08-28,ANET,Arista Networks
+2018-07-02,CPRT,Copart
+2018-06-20,FLT,FleetCor Technologies
+2018-06-18,BR,Broadridge Financial Solutions
+2018-06-18,HFC,HollyFrontier
+2018-06-07,TWTR,Twitter
+2018-06-05,EVRG,Evergy
+2018-05-31,ABMD,Abiomed
+2018-04-04,MSCI,MSCI
+2018-03-19,TTWO,Take-Two Interactive
+2018-03-19,SIVB,SVB Financial
+2018-03-19,NKTR,Nektar Therapeutics
+2018-03-07,IPGP,IPG Photonics
+2018-01-03,HII,Huntington Ingalls Industries
+2017-10-13,NCLH,Norwegian Cruise Line Holdings
+2017-09-18,CDNS,Cadence Design Systems
+2017-09-01,DWDP,DuPont
+2017-09-01,SBAC,SBA Communications CLASS A
+2017-08-29,Q,QuintilesIMS
+2017-08-08,BHF,Brighthouse Financial
+2017-07-26,DRE,Duke Realty Corp
+2017-07-26,AOS,A. O. Smith
+2017-07-26,PKG,Packaging Corporation of America
+2017-07-26,RMD,ResMed
+2017-07-26,MGM,MGM Resorts International
+2017-06-19,HLT,Hilton Worldwide
+2017-06-19,ALGN,Align Technology
+2017-06-19,ANSS,Ansys
+2017-06-19,RE,Everest Re
+2017-06-02,INFO,IHS Markit
+2017-04-05,IT,Gartner
+2017-04-04,DXC,DXC Technology
+2017-03-20,AMD,Advanced Micro Devices
+2017-03-20,RJF,Raymond James Financial
+2017-03-20,ARE,Alexandria Real Estate Equities
+2017-03-16,SNPS,Synopsys
+2017-03-13,DISH,Dish Network CLASS A
+2017-03-02,REG,Regency Centers
+2017-03-01,CBOE,Cboe Holdings
+2017-02-28,INCY,Incyte
+2017-01-05,IDXX,Idexx Laboratories
+2016-12-02,MAA,Mid-America Apartments
+2016-12-06,EVHC,Envision Healthcare
+2016-11-01,ARNC,Arconic Inc
+2016-09-30,COTY,Coty CLASS A
+2016-09-22,COO,The Cooper Companies
+2016-09-08,CHTR,Charter Communications CLASS A
+2016-09-06,MTD,Mettler Toledo
+2016-07-05,FTV,Fortive Corp
+2016-07-01,LNT,Alliant Energy Corp
+2016-07-01,ALB,Albemarle Corporation
+2016-06-22,FBHS,Fortune Brands Home & Security
+2016-06-03,TDG,TransDigm Group
+2016-05-31,AJG,Arthur J. Gallagher & Co.
+2016-05-23,LKQ,LKQ Corporation
+2016-05-18,DLR,Digital Realty Trust
+2016-05-13,ALK,Alaska Air Group
+2016-05-03,AYI,Acuity Brands
+2016-04-25,GPN,Global Payments
+2016-04-18,ULTA,Ulta Beauty
+2016-04-08,UA,Under Armour CLASS C
+2016-04-04,FL,Foot Locker
+2016-03-30,HOLX,Hologic
+2016-03-30,CNC,Centene Corporation
+2016-03-07,UDR,UDR
+2016-03-04,AWK,American Water Works
+2016-02-22,CXO,Concho Resources
+2016-02-01,CFG,Citizens Financial Group
+2016-02-01,FRT,Federal Realty Investment Trust
+2016-01-19,EXR,Extra Space Storage
+2016-01-19,CB,Chubb
+2016-01-05,WLTW,Willis Towers Watson
+2015-12-29,CHD,Church & Dwight
+2015-12-01,CSRA,CSRA
+2015-11-19,ILMN,Illumina
+2015-11-18,SYF,Synchrony Financial
+2015-11-02,HPE,Hewlett Packard Enterprise
+2015-10-07,VRSK,Verisk Analytics
+2015-09-18,CMCSK,Comcast K Special
+2015-09-18,FOX,Twenty-First Century Fox CLASS B
+2015-09-18,NWS,News Corporation CLASS B
+2015-09-02,UAL,United Continental Holdings
+2015-08-28,ATVI,Activision Blizzard
+2015-07-29,SIG,Signet Jewelers
+2015-07-20,PYPL,PayPal
+2015-07-08,AAP,Advance Auto Parts
+2015-07-06,KHC,Kraft Heinz
+2015-07-02,CPGX,Columbia Pipeline Group
+2015-07-01,JBHT,JB Hunt
+2015-07-01,BXLT,Baxalta
+2015-06-11,QRVO,Qorvo
+2015-04-07,O,Realty Income Corporation
+2015-03-23,AAL,American Airlines Group
+2015-03-23,EQIX,Equinix
+2015-03-23,SLG,SL Green Realty
+2015-03-23,HBI,Hanesbrands
+2015-03-18,HSIC,Henry Schein
+2015-03-12,SWKS,Skyworks Solutions
+2015-01-27,HCA,HCA Holdings
+2015-01-27,ENDP,Endo International
+2014-12-05,RCL,Royal Caribbean Cruises
+2014-11-05,LVLT,Level 3 Communications
+2014-09-20,URI,United Rentals
+2014-09-20,UHS,Universal Health Services CLASS B
+2014-08-18,MNK,Mallinckrodt
+2014-08-06,DISCK,Discovery Communications CLASS C
+2014-07-02,MLM,Martin Marietta Materials
+2014-07-01,AMG,Affiliated Managers Group
+2014-06-20,XEC,Cimarex Energy
+2014-05-08,AVGO,Avago Technologies
+2014-05-01,UA,Under Armour CLASS A
+2014-05-01,NAVI,Navient
+2014-04-03,GOOGL,Google CLASS A
+2014-04-02,ESS,Essex Property Trust
+2014-03-21,GMCR,Keurig Green Mountain
+2014-01-24,TSCO,Tractor Supply Company
+2013-12-23,ADS,Alliance Data Systems
+2013-12-23,MHK,Mohawk Industries
+2013-12-23,FB,Facebook CLASS A
+2013-12-10,GGP,General Growth Properties
+2013-12-02,ALLE,Allegion
+2013-11-13,KORS,Michael Kors
+2013-10-29,RIG,Transocean
+2013-09-20,VRTX,Vertex Pharmaceuticals
+2013-09-20,AME,Ametek
+2013-09-10,DAL,Delta Air Lines
+2013-07-08,NLSN,Nielsen Holdings
+2013-06-28,FOXA,21st Century Fox CLASS A
+2013-06-21,ZTS,Zoetis CLASS A
+2013-06-06,GM,General Motors
+2013-05-23,KSU,Kansas City Southern
+2013-05-08,MAC,Macerich
+2013-04-30,REGN,Regeneron Pharmaceuticals
+2013-02-15,PVH,PVH
+2012-12-31,ABBV,AbbVie
+2012-12-21,DLPH,Delphi Automotive
+2012-12-11,GRMN,Garmin
+2012-12-03,DG,Dollar General
+2012-10-10,PETM,PetSmart
+2012-10-02,KRFT,Kraft Foods
+2012-10-01,ADT,ADT
+2012-10-03,PNR,Pentair
+2012-09-05,LYB,LyondellBasell CLASS A
+2012-07-31,ESV,Ensco plc CLASS A
+2012-07-02,STX,Seagate Technology
+2012-06-29,MNST,Monster Beverage
+2012-06-05,LRCX,Lam Research
+2012-05-21,ALXN,Alexion Pharmaceuticals
+2012-05-17,KMI,Kinder Morgan CLASS P
+2012-05-01,PSX,Phillips 66
+2012-04-03,FOSL,Fossil
+2012-03-13,CCI,Crown Castle
+2011-12-31,WPX,WPX Energy
+2011-12-20,TRIP,TripAdvisor
+2011-12-16,BWA,BorgWarner
+2011-12-16,PRGO,Perrigo
+2011-12-16,DLTR,Dollar Tree
+2011-12-12,GAS,AGL Resources.
+2011-11-18,CBE,Cooper Industries
+2011-10-31,XYL,Xylem
+2011-10-14,TEL,TE Connectivity
+2011-09-23,MOS,The Mosaic Company
+2011-07-05,ACN,Accenture CLASS A
+2011-06-30,MPC,Marathon Oil
+2011-06-01,ANR,Alpha Natural Resources
+2011-04-27,CMG,Chipotle Mexican Grill
+2011-04-01,BLK,BlackRock
+2011-03-31,EW,Edwards Lifesciences
+2011-02-28,COV,Covidien
+2011-02-25,JOYG,Joy Global
+2010-12-17,CVC,Cablevision CLASS A
+2010-12-17,FFIV,F5 Networks
+2010-12-17,NFLX,Netflix
+2010-12-17,NFX,Newfield Exploration
+2010-11-17,IR,Ingersoll-Rand
+2010-08-26,TYC,Tyco International
+2010-07-14,CB,Chubb
+2010-06-30,QEP,QEP Resources
+2010-06-28,KMX,CarMax
+2010-04-29,CERN,Cerner
+2010-02-26,HP,Helmerich & Payne
+2009-12-18,V,Visa CLASS A
+2009-12-18,MJN,Mead Johnson Nutrition CLASS A
+2009-12-18,CLF,Cliffs Natural Resources
+2009-12-18,SAI,SAIC
+2009-12-18,ROST,Ross Stores
+2009-11-03,PCLN,Priceline.com
+2009-09-28,ARG,Airgas
+2009-03-03,HRL,Hormel Foods
+2009-03-03,VTR,Ventas
+2008-12-31,OI,Owens-Illinois
+2008-09-16,HRS,Harris Corporation
+2008-09-12,CRM,Salesforce
+2008-09-12,FAST,Fastenal
+2008-06-10,LO,Lorillard Tobacco Company
+2007-12-20,RRC,Range Resources
+2007-12-13,GME,GameStop CLASS A
+2007-10-26,JEC,Jacobs Engineering Group
+2007-10-02,EXPE,Expedia
+2007-10-01,TDC,Teradata
+2007-09-27,TSO,Tesoro Corporation
+2007-09-26,ICE,Intercontinental Exchange
+2007-08-24,LUK,Leucadia National
+2007-03-30,KFT,Kraft Foods CLASS A
+2007-01-10,AVB,AvalonBay Communities
+2006-06-02,JNPR,Juniper Networks
+2005-11-18,AMZN,Amazon.com
+2005-07-01,STZ,Constellation Brands CLASS A
+2003-09-25,ESRX,Express Scripts
+2000-12-05,INTU,Intuit
+2000-12-05,SBL,Symbol Technologies
+2000-12-05,AYE,Allegheny EnergyF
+2000-12-05,ABK,Ambac Financial
+2000-07-27,JDSU,JDS Uniphase

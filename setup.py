@@ -8,7 +8,7 @@ pkg_name = 'fincnn'
 
 setuptools.setup(
     name=pkg_name,
-    version="0.7",
+    version="1.0",
     description="Technical analysis CNN models for stock return prediction",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -24,7 +24,8 @@ setuptools.setup(
         'tensorflow>=2.7.0',
         'sklearn',
         'SQLAlchemy>=1.4.27',
-        'matplotlib>=3.4.3'
+        'matplotlib>=3.4.3',
+        'argparse'
                     ],
     python_requires=">=3.7",
 )
