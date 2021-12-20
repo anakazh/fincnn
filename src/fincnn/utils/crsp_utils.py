@@ -94,5 +94,5 @@ def sqlite_to_spx_csvs():
 
 
 if __name__ == '__main__':
-    #csv_to_sqlite()
+    csv_to_sqlite()
     sqlite_to_spx_csvs()
