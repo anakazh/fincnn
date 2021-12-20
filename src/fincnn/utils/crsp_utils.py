@@ -4,14 +4,9 @@ import sqlite3
 import csv
 from tqdm import tqdm
 from tqdm.contrib.concurrent import thread_map
-import os
-import shutil
-
-
-def overwrite_dir(path):
-    if os.path.exists(path):
-        shutil.rmtree(path)
-    os.makedirs(path)
+from fincnn.config.crsp_config import CRSP_CSV_PATH, CRSP_DB_PATH, CRSP_START_DATE, CRSP_END_DATE
+from fincnn.config.crsp_config import SPX_HISTORY_FOR_CRSP_PATH
+from fincnn.config.generate_datasets_config import RAW_DATA_PATH
 
 
 def str2float(x):
@@ -21,13 +16,14 @@ def str2float(x):
         return np.nan
 
 
-def csv_to_sqlite(csv_path='data/crsp/full_data.csv',
-                  db_path='data/crsp/full_data.db'):
-    conn = sqlite3.connect(db_path)
+def csv_to_sqlite():
+    csv_path = CRSP_CSV_PATH
+    conn = sqlite3.connect(CRSP_DB_PATH)
     cursor = conn.cursor()
     sql_statement = "DROP TABLE IF EXISTS OHLC"
     cursor.execute(sql_statement)
     sql_statement = """CREATE TABLE OHLC (Date text NOT NULL, permno text NOT NULL, ticker text NOT NULL,
+                                          sh_class text,
                                           Open float, High float, Low float, Close float,
                                           Volume float, cfac_pr float, cfac_vol float)"""
     #
@@ -40,10 +36,13 @@ def csv_to_sqlite(csv_path='data/crsp/full_data.csv',
             # line is a dict, where each column name is the key
             # no need to sanitize the header row, that was done automatically upon reading the file
             cursor.execute(
-                "insert into OHLC values (:Date, :permno, :ticker, :Open, :High, :Low, :Close, :Volume, :cfac_pr, :cfac_vol)",
+                """INSERT into OHLC values
+                (:Date, :permno, :ticker, :sh_class, :Open, :High, :Low, :Close, :Volume, :cfac_pr, :cfac_vol)
+                """,
                 {'Date': line['date'],
                  'permno': line['PERMNO'],
                  'ticker': line['TICKER'],
+                 'sh_class': line['SHRCLS'],
                  'Open': str2float(line['OPENPRC']),
                  'High': str2float(line['ASKHI']),
                  'Low': str2float(line['BIDLO']),
@@ -57,44 +56,43 @@ def csv_to_sqlite(csv_path='data/crsp/full_data.csv',
         # that'll be done automatically (the commit - if there are no exceptions)
 
 
-def sqlite_to_ticker_csvs(db_path='data/crsp/full_data.db'):
+def sqlite_to_spx_csvs():
     """
-    Saves data from sqlite DB to security csv files
+    Saves data for SPX constituents from sqlite DB to security csv files
     """
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
+    RAW_DATA_PATH.mkdir(exist_ok=False)
+    spx_history = pd.read_csv(SPX_HISTORY_FOR_CRSP_PATH, parse_dates=['date_added', 'date_removed'])
+    sql_statements = {}
+    for i, (ticker, permno, start_date, end_date) in spx_history[['ticker', 'permno', 'date_added', 'date_removed']].iterrows():
+        start_dt_str = start_date.strftime('%Y%m%d')
+        end_dt_str = end_date.strftime('%Y%m%d')
+        sql_statement = f"""
+            SELECT Date, ticker, Open, High, Low, Close, Volume, cfac_pr, cfac_vol FROM OHLC
+            WHERE permno IN ('{permno}')
+            AND Date BETWEEN {start_dt_str} AND {end_dt_str}
+            """  # permno IN - for speed
 
-    # Due to possible change of ticker use PERMNO to identify stocks
-    # https://libguides.stanford.edu/c.php?g=559845&p=6686228
-    print("Retrieving the list of permanent numbers (PERMNO)")
-    permnos = []
-    for row in cursor.execute('SELECT DISTINCT permno FROM OHLC'):
-        permnos.append(row[0])
-    conn.close()
+        savepath = RAW_DATA_PATH.joinpath(f'{ticker}_{permno}_{start_dt_str}_{end_dt_str}.csv')
+        # if stock was added and removed from index multiple times there will be multiple csv files for the same stock
+        sql_statements[savepath] = sql_statement
 
-    overwrite_dir('../../data/raw')
+    def _save_data_to_csv(savepath):
+        sql_statement = sql_statements[savepath]
+        with sqlite3.connect(CRSP_DB_PATH) as conn:
+            df = pd.read_sql_query(sql_statement, conn)
+            df = df.assign(Open=df.Open * df.cfac_pr,
+                           High=df.High * df.cfac_pr,
+                           Low=df.Low * df.cfac_pr,
+                           Close=df.Close * df.cfac_pr,
+                           Volume=df.Volume * df.cfac_vol)
+            df[['Date', 'Open', 'High', 'Low', 'Close', 'Volume']].set_index('Date').to_csv(savepath)
 
-    def _save_data_for_permno(permno):
-        conn = sqlite3.connect(db_path)
-        query = "SELECT Date, ticker, Open, High, Low, Close, Volume, cfac_pr, cfac_vol " \
-                "FROM OHLC WHERE permno IN ({})".format(permno)
-
-        df = pd.read_sql_query(query, conn)
-        ticker = df.ticker.iloc[-1]
-        savepath = 'data/raw/' + ticker + '_' + permno + '.csv'
-        df = df.assign(Open=df.Open * df.cfac_pr,
-                       High=df.High * df.cfac_pr,
-                       Low=df.Low * df.cfac_pr,
-                       Close=df.Close * df.cfac_pr,
-                       Volume=df.Volume * df.cfac_vol)
-        df[['Date', 'Open', 'High', 'Low', 'Close', 'Volume']].set_index('Date').to_csv(savepath)
-        conn.close()
-
-    thread_map(_save_data_for_permno, permnos,
+    thread_map(_save_data_to_csv,
+               list(sql_statements.keys()),
                max_workers=10,
-               desc='Saving data to separate csv files')
+               desc='Saving SPX data to separate csv files')
 
 
 if __name__ == '__main__':
-    csv_to_sqlite()
-    sqlite_to_ticker_csvs()
+    #csv_to_sqlite()
+    sqlite_to_spx_csvs()
