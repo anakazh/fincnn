@@ -7,9 +7,9 @@ import numpy as np
 import json
 from pathlib import Path
 from multiprocessing import cpu_count
-from fincnn.utils.image_utils import img_specs
+from fincnn.utils.image_utils import IMG_SPECS as img_specs
 import shutil
-from generate_datasets_config import PROCESSED_DATA_PATH
+from fincnn.config.generate_datasets_config import PROCESSED_DATA_PATH
 
 
 CPU_COUNT = cpu_count()  # used for model training and image generation
@@ -54,8 +54,9 @@ class BaseCNN:
         for sign in ['pos', 'neg']:
             target_path.joinpath(sign).mkdir(parents=True, exist_ok=True)
 
-        for filename in source_path.iterdir():
-            rets = filename[:-4].split('_')[2:]
+        for filepath in source_path.iterdir():
+            filename = filepath.name
+            rets = filename[:-4].split('_')[3:]
             rets = iter(rets)
             rets = dict(zip(rets, rets))
             ret = float(rets[f'ret{self.return_horizon}'])
@@ -64,7 +65,7 @@ class BaseCNN:
             elif ret < -abs(ret_threshold):
                 savepath = target_path.joinpath('neg', filename)
             # ignore ret == 0
-            shutil.copy(source_path.joinpath(filename), savepath)
+            shutil.copy(filepath, savepath)
 
     def compile(self):
         raise Exception('Model design missing')
@@ -113,6 +114,9 @@ class BaseCNN:
         train_dataset = dataset.take(train_size)
         val_dataset = dataset.skip(train_size)
 
+        self.model.compile()
+        self.model.summary()
+        
         max_epochs = 10
         stopping_rule = callbacks.EarlyStopping(patience=2)
         # Jiang, Kelly, Xiu (2020): We use early stopping to halt training once the validation

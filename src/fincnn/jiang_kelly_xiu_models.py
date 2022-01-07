@@ -71,7 +71,6 @@ class CNN_5(BaseCNN):
         # some vector components could be negative, or greater than one; and might not sum to 1;
         # but after applying softmax, each component will be in the interval [0,1],
         # and the components will add up to 1, so that they can be interpreted as probabilities.
-        self.model.summary()
         self.model.compile(optimizer='adam',
                            loss=losses.CategoricalCrossentropy(from_logits=False),
                            # to use BinaryCrossentropy add layer.Dense(1) above
@@ -133,7 +132,6 @@ class CNN_20(BaseCNN):
         self.model.add(layers.Dense(2, kernel_initializer=w_init))  # Dense layer = fully connected layer
         # self.model.add(layers.Dense(1, kernel_initializer=w_init))  # needed when using BinaryCrossentropy
         self.model.add(layers.Softmax())  # Softmax layer
-        self.model.summary()
         self.model.compile(optimizer='adam',
                            loss=losses.CategoricalCrossentropy(from_logits=False),
                            # to use BinaryCrossentropy add layer.Dense(1) above
@@ -200,7 +198,6 @@ class CNN_60(BaseCNN):
         self.model.add(layers.Dense(2, kernel_initializer=w_init))  # Dense layer = fully connected layer
         # self.model.add(layers.Dense(1, kernel_initializer=w_init))  # needed when using BinaryCrossentropy
         self.model.add(layers.Softmax())  # Softmax layer
-        self.model.summary()
         self.model.compile(optimizer='adam',
                            loss=losses.CategoricalCrossentropy(from_logits=False),
                            # to use BinaryCrossentropy add layer.Dense(1) above
