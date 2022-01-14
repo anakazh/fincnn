@@ -9,7 +9,7 @@ from pathlib import Path
 from multiprocessing import cpu_count
 from fincnn.utils.image_utils import IMG_SPECS as img_specs
 import shutil
-from fincnn.config.generate_datasets_config import PROCESSED_DATA_PATH
+from fincnn.config.paths_config import PROCESSED_DATA_PATH
 from tqdm import tqdm
 
 
