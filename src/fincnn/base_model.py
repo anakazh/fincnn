@@ -10,6 +10,7 @@ from multiprocessing import cpu_count
 from fincnn.utils.image_utils import IMG_SPECS as img_specs
 import shutil
 from fincnn.config.generate_datasets_config import PROCESSED_DATA_PATH
+from tqdm import tqdm
 
 
 CPU_COUNT = cpu_count()  # used for model training and image generation
@@ -32,9 +33,9 @@ class BaseCNN:
 
         self.model_dir_path = Path(f'models/{self.name}/')
         self.train_dataset_path = Path(f'models/{self.name}/images/train/')
-        self.train_dataset_path.mkdir(parents=True, exist_ok=False)
+        self.train_dataset_path.mkdir(parents=True, exist_ok=True)
         self.test_dataset_path = Path(f'models/{self.name}/images/test/')
-        self.test_dataset_path.mkdir(parents=True, exist_ok=False)
+        self.test_dataset_path.mkdir(parents=True, exist_ok=True)
 
         self.model_path = self.model_dir_path.joinpath(f'{self.name}.h5')
         self.history_path = self.model_dir_path.joinpath(f'history.json')
@@ -54,7 +55,7 @@ class BaseCNN:
         for sign in ['pos', 'neg']:
             target_path.joinpath(sign).mkdir(parents=True, exist_ok=True)
 
-        for filepath in source_path.iterdir():
+        for filepath in tqdm(source_path.iterdir(), desc='Labelling images in progress '):
             filename = filepath.name
             rets = filename[:-4].split('_')[3:]
             rets = iter(rets)
@@ -114,14 +115,14 @@ class BaseCNN:
         train_dataset = dataset.take(train_size)
         val_dataset = dataset.skip(train_size)
 
-        self.model.compile()
         self.model.summary()
         
         max_epochs = 10
         stopping_rule = callbacks.EarlyStopping(patience=2)
         # Jiang, Kelly, Xiu (2020): We use early stopping to halt training once the validation
         # sample loss function fails to improve for two consecutive epochs
-        self.history = self.model.fit(x=train_dataset, y=None, batch_size=self.batch_size,
+        self.history = self.model.fit(x=train_dataset, #y=None,
+                                      batch_size=self.batch_size,
                                       epochs=max_epochs,
                                       callbacks=[stopping_rule],
                                       verbose=2,
@@ -133,6 +134,8 @@ class BaseCNN:
         with open(self.history_path, 'w') as f:
             json.dump(self.history, f)
         self.model.save(self.model_path)
+        # remove directory with images sorted into pos and neg, originals stay at PROCESSED_DATA_PATH
+        shutil.rmtree(self.train_dataset_path)
 
     def predict(self):
         if self.model is None:
@@ -178,3 +181,6 @@ class BaseCNN:
             print(pd.DataFrame(model_metrics))
 
         json.dump(model_metrics, open(self.metrics_path, 'w'))
+
+        # remove directory with images sorted into pos and neg, originals stay at PROCESSED_DATA_PATH
+        shutil.rmtree(self.test_dataset_path)

@@ -1,5 +1,6 @@
 import mplfinance as mpl
-from fincnn.config.generate_datasets_config import RAW_DATA_PATH, PROCESSED_DATA_PATH, TEST_SAMPLE, TRAIN_SAMPLE
+from fincnn.config.paths_config import RAW_DATA_PATH, PROCESSED_DATA_PATH
+from fincnn.config.generate_datasets_config import TEST_SAMPLE, TRAIN_SAMPLE
 from fincnn.utils.image_utils import style, width_config, convert_rgba_to_bw, IMG_SPECS
 from fincnn.utils.data_utils import handle_missing_values
 from tqdm.contrib.concurrent import process_map

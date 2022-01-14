@@ -4,11 +4,20 @@ from tensorflow.keras import layers, models, losses
 
 BATCH_SIZE = 128  # used by Jiang, Kelly, Xiu (2020), adjust to a lower value when running low on free system memory
 
+# Weight initialization:
+# Jiang, Kelly, Xiu(2020): We apply the Xavier initializer for weights in each layer.
+# This promotes faster convergence by generating starting values for weights to
+# ensure that prediction variance begins on a comparable scale to that of the labels.
+
+w_init = 'glorot_uniform'  # The Glorot uniform initializer, also called Xavier uniform initializer.
+# w_init = 'glorot_normal'  # The Glorot normal initializer, also called Xavier normal initializer.
+
 
 class CNN_5(BaseCNN):
 
     def __init__(self, return_horizon=20, name='CNN_5_20', batch_size=BATCH_SIZE):
-        super().__init__(name=name, image_horizon=5, return_horizon=return_horizon, batch_size=batch_size)
+        super().__init__(name=name, image_horizon=5, return_horizon=return_horizon,
+                         crossentropy='categorical', batch_size=batch_size)
 
     def compile(self):
         # Model design
@@ -38,13 +47,6 @@ class CNN_5(BaseCNN):
         # Jiang, Kelly, Xiu(2020): We apply 50% dropout to the fully connected layer
         # (the relatively low parameterization in convolutional blocks avoids the need for dropout there).
 
-        # Weight initialization:
-        # Jiang, Kelly, Xiu(2020): We apply the Xavier initializer for weights in each layer.
-        # This promotes faster convergence by generating starting values for weights to
-        # ensure that prediction variance begins on a comparable scale to that of the labels.
-        w_init = 'glorot_uniform'  # The Glorot uniform initializer, also called Xavier uniform initializer.
-        #w_init = 'glorot_normal'  # The Glorot normal initializer, also called Xavier normal initializer.
-
         # BUILDING BLOCK 1:
         self.model.add(layers.Conv2D(64, (5, 3), kernel_initializer=w_init, padding='same'))  # no activation is applied
         self.model.add(layers.BatchNormalization())
@@ -63,7 +65,7 @@ class CNN_5(BaseCNN):
         self.model.add(layers.Dense(2, kernel_initializer=w_init))  # Dense layer = fully connected layer
         # Jiang, Kelly, Xiu (2020): the number of parameters in a fully connected layer is calculated as L × 2,
         # where L is the length of the input vector and 2 corresponds to the two classification labels.
-        # self.model.add(layers.Dense(1, kernel_initializer=w_init))  # needed when using BinaryCrossentropy
+        #self.model.add(layers.Dense(1, kernel_initializer=w_init))  # needed when using BinaryCrossentropy
         self.model.add(layers.Softmax())  # Softmax layer
         # Wiki: The softmax function takes as input a vector z of K real numbers,
         # and normalizes it into a probability distribution consisting of K probabilities proportional
@@ -74,7 +76,7 @@ class CNN_5(BaseCNN):
         self.model.compile(optimizer='adam',
                            loss=losses.CategoricalCrossentropy(from_logits=False),
                            # to use BinaryCrossentropy add layer.Dense(1) above
-                           #loss=tf.keras.losses.BinaryCrossentropy(from_logits=False),
+                           #loss=losses.BinaryCrossentropy(from_logits=False),
                            # set from_logits=False for inputs to be interpreted as probabilities
                            metrics=['accuracy'])
         # Jiang, Kelly, Xiu (2020):
@@ -85,7 +87,8 @@ class CNN_5(BaseCNN):
 class CNN_20(BaseCNN):
 
     def __init__(self, return_horizon=20, name='CNN_20_20', batch_size=BATCH_SIZE):
-        super().__init__(name=name, image_horizon=20, return_horizon=return_horizon, batch_size=batch_size)
+        super().__init__(name=name, image_horizon=20, return_horizon=return_horizon,
+                         crossentropy='categorical', batch_size=batch_size)
 
     def compile(self):
         # Model design
@@ -93,8 +96,6 @@ class CNN_20(BaseCNN):
         self.model.add(layers.InputLayer(input_shape=(self.img_height, self.img_width, 1),
                                          batch_size=self.batch_size))
         self.model.add(layers.Rescaling(1. / 255))
-
-        w_init = 'glorot_uniform'  # The Glorot uniform initializer, also called Xavier uniform initializer.
 
         # BUILDING BLOCK 1:
         self.model.add(layers.Conv2D(64, (5, 3),
@@ -135,7 +136,7 @@ class CNN_20(BaseCNN):
         self.model.compile(optimizer='adam',
                            loss=losses.CategoricalCrossentropy(from_logits=False),
                            # to use BinaryCrossentropy add layer.Dense(1) above
-                           # loss=tf.keras.losses.BinaryCrossentropy(from_logits=False),
+                           # loss=losses.BinaryCrossentropy(from_logits=False),
                            # set from_logits=False for inputs to be interpreted as probabilities
                            metrics=['accuracy'])
         # Jiang, Kelly, Xiu (2020):
@@ -145,7 +146,8 @@ class CNN_20(BaseCNN):
 
 class CNN_60(BaseCNN):
     def __init__(self, return_horizon=20, name='CNN_60_20', batch_size=BATCH_SIZE):
-        super().__init__(name=name, image_horizon=60, return_horizon=return_horizon, batch_size=batch_size)
+        super().__init__(name=name, image_horizon=60, return_horizon=return_horizon,
+                         crossentropy='categorical', batch_size=batch_size)
 
     def compile(self):
         # Model design
@@ -153,8 +155,6 @@ class CNN_60(BaseCNN):
         self.model.add(layers.InputLayer(input_shape=(self.img_height, self.img_width, 1),
                                          batch_size=self.batch_size))
         self.model.add(layers.Rescaling(1. / 255))
-
-        w_init = 'glorot_uniform'  # The Glorot uniform initializer, also called Xavier uniform initializer.
 
         # BUILDING BLOCK 1:
         self.model.add(layers.Conv2D(64, (5, 3),
@@ -201,7 +201,7 @@ class CNN_60(BaseCNN):
         self.model.compile(optimizer='adam',
                            loss=losses.CategoricalCrossentropy(from_logits=False),
                            # to use BinaryCrossentropy add layer.Dense(1) above
-                           #loss=tf.keras.losses.BinaryCrossentropy(from_logits=False),
+                           #loss=losses.BinaryCrossentropy(from_logits=False),
                            # set from_logits=False for inputs to be interpreted as probabilities
                            metrics=['accuracy'])
         # Jiang, Kelly, Xiu (2020):

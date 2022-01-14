@@ -1,9 +1,6 @@
-from pathlib import Path
 from fincnn.config.crsp_config import CRSP_START_DATE, CRSP_END_DATE
 from fincnn.utils.data_utils import Sample
 
-RAW_DATA_PATH = Path('data/raw/')
-PROCESSED_DATA_PATH = Path(f'data/processed/')
 
 RETURN_HORIZONS = [20, 60]
 
