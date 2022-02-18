@@ -4,9 +4,8 @@ import sqlite3
 import csv
 from tqdm import tqdm
 from tqdm.contrib.concurrent import thread_map
-from fincnn.config.crsp_config import CRSP_CSV_PATH, CRSP_DB_PATH, CRSP_START_DATE, CRSP_END_DATE
-from fincnn.config.crsp_config import SPX_HISTORY_FOR_CRSP_PATH
-from fincnn.config.generate_datasets_config import RAW_DATA_PATH
+from fincnn.config.crsp_config import SPX_HISTORY_FOR_CRSP_PATH, CRSP_CSV_PATH, CRSP_DB_PATH
+from fincnn.config.paths_config import RAW_DATA_PATH
 
 
 def str2float(x):
@@ -80,10 +79,12 @@ def sqlite_to_spx_csvs():
         sql_statement = sql_statements[savepath]
         with sqlite3.connect(CRSP_DB_PATH) as conn:
             df = pd.read_sql_query(sql_statement, conn)
-            df = df.assign(Open=df.Open * df.cfac_pr,
-                           High=df.High * df.cfac_pr,
-                           Low=df.Low * df.cfac_pr,
-                           Close=df.Close * df.cfac_pr,
+            # Adjustment for price and volume:
+            # https://www.crsp.org/products/documentation/crsp-calculations
+            df = df.assign(Open=df.Open / df.cfac_pr,
+                           High=df.High / df.cfac_pr,
+                           Low=df.Low / df.cfac_pr,
+                           Close=df.Close / df.cfac_pr,
                            Volume=df.Volume * df.cfac_vol)
             df[['Date', 'Open', 'High', 'Low', 'Close', 'Volume']].set_index('Date').to_csv(savepath)
 
@@ -94,5 +95,5 @@ def sqlite_to_spx_csvs():
 
 
 if __name__ == '__main__':
-    csv_to_sqlite()
+    #csv_to_sqlite()
     sqlite_to_spx_csvs()
