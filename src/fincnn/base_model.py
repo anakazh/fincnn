@@ -57,16 +57,20 @@ class BaseCNN:
 
         for filepath in tqdm(source_path.iterdir(), desc='Labelling images in progress '):
             filename = filepath.name
-            rets = filename[:-4].split('_')[3:]
-            rets = iter(rets)
-            rets = dict(zip(rets, rets))
-            ret = float(rets[f'ret{self.return_horizon}'])
+            ret = self.get_return_from_filename(filename)
             if ret > abs(ret_threshold):
                 savepath = target_path.joinpath('pos', filename)
             elif ret < -abs(ret_threshold):
                 savepath = target_path.joinpath('neg', filename)
             # ignore ret == 0
             shutil.copy(filepath, savepath)
+
+    def get_return_from_filename(self, filename):
+        rets = filename[:-4].split('_')[3:]
+        rets = iter(rets)
+        rets = dict(zip(rets, rets))
+        ret = float(rets[f'ret{self.return_horizon}'])
+        return ret
 
     def compile(self):
         raise Exception('Model design missing')
@@ -153,10 +157,28 @@ class BaseCNN:
                           target_path=self.test_dataset_path,
                           ret_threshold=0)
         self.describe_test_dataset()
-
         test_dataset = self.load_dataset(self.test_dataset_path)
+
         y_pred = self.model.predict(test_dataset)
         y_true = np.array([a for a in test_dataset.map(lambda x, y: y).unbatch().as_numpy_iterator()])
+
+        filenames = [x.split('/')[-1] for x in test_dataset.file_paths]
+        tickers_permnos = [x.split('_')[0]+'_'+x.split('_')[1] for x in filenames]
+        ret_dates = [x.split('_')[2] for x in filenames]
+        rets = [self.get_return_from_filename(x) for x in filenames]
+
+        if 'pos' == test_dataset.class_names[0]:
+            pred_prob_pos = [x[0] for x in y_pred]
+            pred_prob_neg = [x[1] for x in y_pred]
+        else:
+            pred_prob_neg = [x[0] for x in y_pred]
+            pred_prob_pos = [x[1] for x in y_pred]
+
+        df = pd.DataFrame(list(zip(tickers_permnos, ret_dates, rets, pred_prob_pos, pred_prob_neg)),
+                          columns=['Ticker_permno', 'ret_date', 'ret', 'pred_prob_pos', 'pred_prob_neg'])
+        # save predictions for test sample as dataframe with tickers and timestamps
+        df.to_csv(self.model_dir_path.joinpath('test_sample_pred_prob.csv'), index=False)
+
         if self.crossentropy == 'categorical':
             y_pred = y_pred.round()  # y_pred is probability, transform to 0 and 1
             accuracy = metrics.accuracy_score(y_true, y_pred)
@@ -184,3 +206,25 @@ class BaseCNN:
 
         # remove directory with images sorted into pos and neg, originals stay at PROCESSED_DATA_PATH
         shutil.rmtree(self.test_dataset_path)
+
+    def test_sample_perf(self):
+        df = pd.read_csv(self.model_dir_path.joinpath('test_sample_pred_prob.csv'), parse_dates=True)
+        df['ret_date'] = df.ret_date.apply(str).apply(pd.Timestamp)
+        df['pred_prob_pos_signal'] = df.pred_prob_pos.round()
+        df['pred_prob_neg_signal'] = df.pred_prob_neg.round()
+        df['signal'] = df.pred_prob_pos_signal - df.pred_prob_neg_signal
+        returns = df.pivot(columns=['Ticker_permno'], index='ret_date', values='ret')
+        signal = df.pivot(columns=['Ticker_permno'], index='ret_date', values='signal')
+        returns_resampled = returns.resample(pd.offsets.BDay(self.return_horizon)).first()
+        signal_resampled = signal.resample(pd.offsets.BDay(self.return_horizon)).first()
+        return returns_resampled, signal_resampled
+
+        # no need to shift signal because returns are forward-looking
+        # (already shifted by -self.return_horizon)
+        # TODO: equally weighted and value weighted; longonly and longshort
+        returns_longonly_ew = returns_resampled.mul(signal_resampled).shift(1)
+        returns_longshort_ew = returns_resampled.mul(signal_resampled).shift(1)
+        cumperf_longonly_ew = returns_longonly_ew.add(1).cumprod().sub(1)
+        cumperf_longshort_ew = returns_longshort_ew.add(1).cumprod().sub(1)
+
+
