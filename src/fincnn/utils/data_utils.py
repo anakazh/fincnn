@@ -31,7 +31,7 @@ class Sample:
         filepaths = [f for f in RAW_DATA_PATH.rglob(f'*.csv')]
         close_columns = dict()
         for filepath in tqdm(filepaths, 'Reading csv files'):
-            ticker = filepath.name.split('_')[0]
+            ticker = f"{filepath.name.split('_')[0]}_{filepath.name.split('_')[1]}"
             ticker_df = pd.read_csv(filepath, index_col='Date', parse_dates=True).sort_index()
             close_columns[ticker] = ticker_df['Close']
         df = pd.concat(close_columns, axis=1)
