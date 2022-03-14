@@ -8,7 +8,7 @@ pkg_name = 'fincnn'
 
 setuptools.setup(
     name=pkg_name,
-    version="1.4",
+    version="1.5",
     description="Technical analysis CNN models for stock return prediction",
     long_description=long_description,
     long_description_content_type="text/markdown",
