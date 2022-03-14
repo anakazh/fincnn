@@ -122,7 +122,7 @@ class BaseCNN:
         self.model.summary()
         
         max_epochs = 10
-        stopping_rule = callbacks.EarlyStopping(patience=2)
+        stopping_rule = callbacks.EarlyStopping(monitor='val_accuracy', min_delta=1, patience=2)
         # Jiang, Kelly, Xiu (2020): We use early stopping to halt training once the validation
         # sample loss function fails to improve for two consecutive epochs
         self.history = self.model.fit(x=train_dataset, #y=None,
@@ -207,7 +207,12 @@ class BaseCNN:
         # remove directory with images sorted into pos and neg, originals stay at PROCESSED_DATA_PATH
         shutil.rmtree(self.test_dataset_path)
 
-    def test_sample_perf(self):
+    def trading_signal_df(self, longonly=True):
+        """
+        Trading signal based on predictions of the model; strategy holding period equals self.return_horizon
+        longonly - True for strategy with no short positions
+        :return: dataframe with daily trading signal (columns correspond to securities), equally-weighted
+        """
         df = pd.read_csv(self.model_dir_path.joinpath('test_sample_pred_prob.csv'), parse_dates=True)
         df['ret_date'] = df.ret_date.apply(str).apply(pd.Timestamp)
         df['pred_prob_pos_signal'] = df.pred_prob_pos.round()
@@ -215,16 +220,17 @@ class BaseCNN:
         df['signal'] = df.pred_prob_pos_signal - df.pred_prob_neg_signal
         returns = df.pivot(columns=['Ticker_permno'], index='ret_date', values='ret')
         signal = df.pivot(columns=['Ticker_permno'], index='ret_date', values='signal')
-        returns_resampled = returns.resample(pd.offsets.BDay(self.return_horizon)).first()
         signal_resampled = signal.resample(pd.offsets.BDay(self.return_horizon)).first()
-        return returns_resampled, signal_resampled
-
-        # no need to shift signal because returns are forward-looking
-        # (already shifted by -self.return_horizon)
-        # TODO: equally weighted and value weighted; longonly and longshort
-        returns_longonly_ew = returns_resampled.mul(signal_resampled).shift(1)
-        returns_longshort_ew = returns_resampled.mul(signal_resampled).shift(1)
-        cumperf_longonly_ew = returns_longonly_ew.add(1).cumprod().sub(1)
-        cumperf_longshort_ew = returns_longshort_ew.add(1).cumprod().sub(1)
-
+        signal = signal_resampled.fillna(0).reindex(returns.index).ffill()
+        if longonly:
+            signal = signal.replace(-1, 0)
+            signal = signal.div(signal.sum(axis=1), axis=0)
+        else:
+            # long-short, total exposure maintained at 1
+            # (i.e. when short side has 30% weight, the long side is set to 130%)
+            signal_count = signal[signal != 0].count(axis=1)
+            signal = signal.div(signal_count, axis=0)
+            adj_factor = signal[signal < 0].sum(axis=1).mul(-1)
+            signal = signal + signal[signal > 0].mul(adj_factor, axis=0).fillna(0)
+        return signal
 
