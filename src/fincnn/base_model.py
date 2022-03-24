@@ -150,7 +150,7 @@ class BaseCNN:
         if self.history is None:
             raise Exception(f'No {self.name} found, train the model first!')
 
-        if not any(PROCESSED_DATA_PATH.joinpath(f'{self.image_horizon}_day/train/').iterdir()):
+        if not any(PROCESSED_DATA_PATH.joinpath(f'{self.image_horizon}_day/test/').iterdir()):
             raise Exception('No test dataset found, generate images first!')
 
         self.label_images(source_path=PROCESSED_DATA_PATH.joinpath(f'{self.image_horizon}_day/test/'),
