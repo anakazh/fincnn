@@ -226,7 +226,7 @@ if __name__ == '__main__':
 
     model_dict = dict(zip(['jkx_CNN_5', 'jkx_CNN_20', 'jkx_CNN_60'], [CNN_5, CNN_20, CNN_60]))
     if args.img_horizon is not None:
-        model_dict = model_dict[f'jkx_CNN_{args.img_horizon}']
+        model_dict = {f'jkx_CNN_{args.img_horizon}': model_dict[f'jkx_CNN_{args.img_horizon}']}
 
     for model_name, CNN in model_dict.items():
         for return_horizon in RETURN_HORIZONS:
