@@ -211,8 +211,31 @@ class CNN_60(BaseCNN):
 
 if __name__ == '__main__':
 
-    CNN_5(return_horizon=20, name='CNN_5_20')
+    from fincnn.config.generate_datasets_config import RETURN_HORIZONS
+    import argparse
+    parser = argparse.ArgumentParser(description='Train and evaluate models.')
+    parser.add_argument('-img-horizon', type=int, nargs='?',
+                        help='fit/valuate models with the given image horizon (choose from 5, 20, 60), \
+                        if omitted fit/valuate all models')
+    parser.add_argument('--train', action='store_true',
+                        help='train models only, do not run evaluation')
+    parser.add_argument('--evaluate', action='store_true',
+                        help='evaluate models only')
 
-    CNN_20(return_horizon=20, name='CNN_20_20')
+    args = parser.parse_args()
 
-    CNN_60(return_horizon=20, name='CNN_60_20')
+    model_dict = zip(['jkx_CNN_5', 'jkx_CNN_20', 'jkx_CNN_60'], [CNN_5, CNN_20, CNN_60])
+    if args.img_horizon is not None:
+        model_dict = model_dict[f'jkx_CNN_{args.img_horizon}']
+
+    for model_name, CNN in model_dict:
+        for return_horizon in RETURN_HORIZONS:
+            name = f'{model_name}_{return_horizon}'
+            cnn = CNN(return_horizon=return_horizon, name=name)
+            if args.train:
+                cnn.fit()
+            elif args.evaluate:
+                cnn.evaluate()
+            else:
+                cnn.fit()
+                cnn.evaluate()
