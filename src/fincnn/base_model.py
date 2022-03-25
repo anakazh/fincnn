@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 from multiprocessing import cpu_count
 from fincnn.utils.image_utils import IMG_SPECS as img_specs
+from fincnn.utils.data_utils import get_return_from_filename
 import shutil
 from fincnn.config.paths_config import PROCESSED_DATA_PATH
 from tqdm import tqdm
@@ -64,13 +65,6 @@ class BaseCNN:
                 savepath = target_path.joinpath('neg', filename)
             # ignore ret == 0
             shutil.copy(filepath, savepath)
-
-    def get_return_from_filename(self, filename):
-        rets = filename[:-4].split('_')[3:]
-        rets = iter(rets)
-        rets = dict(zip(rets, rets))
-        ret = float(rets[f'ret{self.return_horizon}'])
-        return ret
 
     def compile(self):
         raise Exception('Model design missing')
@@ -156,16 +150,20 @@ class BaseCNN:
         self.label_images(source_path=PROCESSED_DATA_PATH.joinpath(f'{self.image_horizon}_day/test/'),
                           target_path=self.test_dataset_path,
                           ret_threshold=0)
+
         self.describe_test_dataset()
+        print('Loading dataset in progress')
         test_dataset = self.load_dataset(self.test_dataset_path)
 
-        y_pred = self.model.predict(test_dataset)
-        y_true = np.array([a for a in test_dataset.map(lambda x, y: y).unbatch().as_numpy_iterator()])
-
-        filenames = [x.name for x in test_dataset.file_paths]
+        filenames = [x.split('/')[-1] for x in test_dataset.file_paths]
         tickers_permnos = [x.split('_')[0]+'_'+x.split('_')[1] for x in filenames]
         ret_dates = [x.split('_')[2] for x in filenames]
-        rets = [self.get_return_from_filename(x) for x in filenames]
+        rets = [get_return_from_filename(x, self.return_horizon) for x in filenames]
+
+        print('Predicting returns in progress')
+        y_pred = self.model.predict(test_dataset)
+        print('Accuracy computation in progress')
+        y_true = np.array([a for a in test_dataset.map(lambda x, y: y).unbatch().as_numpy_iterator()])
 
         if 'pos' == test_dataset.class_names[0]:
             pred_prob_pos = [x[0] for x in y_pred]

@@ -106,3 +106,11 @@ def handle_missing_values(data):
     #                   Low=data.Low.fillna(data.Close),
     #                   Volume=data.Volume.fillna(0))
     return data
+
+
+def get_return_from_filename(filename, return_horizon):
+    rets = filename[:-4].split('_')[3:]
+    rets = iter(rets)
+    rets = dict(zip(rets, rets))
+    ret = float(rets[f'ret{return_horizon}'])
+    return ret
