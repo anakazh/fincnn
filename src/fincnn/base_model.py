@@ -58,7 +58,7 @@ class BaseCNN:
 
         for filepath in tqdm(source_path.iterdir(), desc='Labelling images in progress '):
             filename = filepath.name
-            ret = self.get_return_from_filename(filename)
+            ret = get_return_from_filename(filename, self.return_horizon)
             if ret > abs(ret_threshold):
                 savepath = target_path.joinpath('pos', filename)
             elif ret < -abs(ret_threshold):
