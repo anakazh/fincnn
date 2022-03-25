@@ -162,7 +162,7 @@ class BaseCNN:
         y_pred = self.model.predict(test_dataset)
         y_true = np.array([a for a in test_dataset.map(lambda x, y: y).unbatch().as_numpy_iterator()])
 
-        filenames = [x.split('/')[-1] for x in test_dataset.file_paths]
+        filenames = [x.name for x in test_dataset.file_paths]
         tickers_permnos = [x.split('_')[0]+'_'+x.split('_')[1] for x in filenames]
         ret_dates = [x.split('_')[2] for x in filenames]
         rets = [self.get_return_from_filename(x) for x in filenames]
