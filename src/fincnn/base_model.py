@@ -155,7 +155,8 @@ class BaseCNN:
         print('Loading dataset in progress')
         test_dataset = self.load_dataset(self.test_dataset_path)
 
-        filenames = [x.split('/')[-1] for x in test_dataset.file_paths]
+        filepaths = [Path(x) for x in test_dataset.file_paths]
+        filenames = [x.name for x in filepaths]
         tickers_permnos = [x.split('_')[0]+'_'+x.split('_')[1] for x in filenames]
         ret_dates = [x.split('_')[2] for x in filenames]
         rets = [get_return_from_filename(x, self.return_horizon) for x in filenames]

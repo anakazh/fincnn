@@ -109,6 +109,7 @@ def handle_missing_values(data):
 
 
 def get_return_from_filename(filename, return_horizon):
+    # example filename: A_87432_20100408_ret20_-0.0209_ret60_-0.1824.png
     rets = filename[:-4].split('_')[3:]
     rets = iter(rets)
     rets = dict(zip(rets, rets))
