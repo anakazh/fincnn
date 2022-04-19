@@ -22,17 +22,17 @@ Replication of image classification model from ["**(Re-)Imag(in)ing Price Trends
    `python -m fincnn.jiang_kelly_xiu_models.py --evaluate`
    
 ## Navigation
-`fincnn/config/' contains paths and train/test sample parameters
+`fincnn/config/` contains paths and train/test sample parameters
 
-`fincnn/spx_history/' contains csv files with S&P 500 additions and removals (with corresponding CRSP permanent security numbers)
+`fincnn/spx_history/` contains csv files with S&P 500 additions and removals (with corresponding CRSP permanent security numbers)
 
-`fincnn/utils/' contains utilities for raw data manipulation, inventory of samples and chart generation
+`fincnn/utils/` contains utilities for raw data manipulation, inventory of samples and chart generation
 
-`fincnn/base_model.py' contains a base CNN class with .fit() and  .evaluate() methods
+`fincnn/base_model.py` contains a base CNN class with .fit() and  .evaluate() methods
 
-`fincnn/generate_datasets.py' is a script for generating stock chart images from raw data
+`fincnn/generate_datasets.py` is a script for generating stock chart images from raw data
 
-`fincnn/jiang_kelly_xiu_models.py' contains models with specifications from Jiang, Kelly, Xiu (2020) and a script to train and evaluate them
+`fincnn/jiang_kelly_xiu_models.py` contains models with specifications from Jiang, Kelly, Xiu (2020) and a script to train and evaluate them
 
 
 
