@@ -5,7 +5,7 @@ Replication of image classification model from ["**(Re-)Imag(in)ing Price Trends
 ## Usage:
 1. Get raw data:
 
-   a) Download raw data from CRSP database as csv file and save it to `data/crsp/full_data.csv
+   a) Download raw data from CRSP database as csv file and save it to `data/crsp/full_data.csv`
    
       Run `fincnn.utils.crsp_utils` to save data for stocks from S&P500 into `data/raw/`
       
@@ -16,7 +16,9 @@ Replication of image classification model from ["**(Re-)Imag(in)ing Price Trends
 3. Run `python -m fincnn.jiang_kelly_xiu_models.py` to train and evaluate the models
 
    Alternatively train and evaluate model in two steps:
+   
    `python -m fincnn.jiang_kelly_xiu_models.py --train`
+   
    `python -m fincnn.jiang_kelly_xiu_models.py --evaluate`
 
 
